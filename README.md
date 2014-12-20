@@ -1,4 +1,0 @@
-Strateg
-=======
-
-strateg_tulecka

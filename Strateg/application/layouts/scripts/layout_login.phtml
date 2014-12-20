@@ -1,0 +1,18 @@
+<?php
+$this->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=utf-8');
+$this->headTitle()->setSeparator(' - ');
+$this->headTitle('Strateg');
+echo $this->doctype(); ?>
+<html>
+<head>
+    <?php echo $this->headMeta(); ?>
+    <?php echo $this->headTitle(); ?>
+    <?php echo $this->headStyle(); ?>
+    <?php echo $this->headLink()->prependStylesheet($this->baseUrl . '/css/bootstrap.min.css'); ?>
+</head>
+<body>
+<div id="wrapper" class="container">
+<?php echo $this->layout()->content; ?>
+</div>
+</body>
+</html>
