@@ -4,7 +4,7 @@ class Application_Model_DbTable_ProblemProposal extends Zend_Db_Table_Abstract
 {
 
     protected $_name = 'problem_navrh';
-    protected $_primary = array('id_problem', 'id_analyza');
+    protected $_primary = array('id_problem', 'id_navrh');
 
     public function getProblemProposal($id_problem, $id_navrh)
     {
