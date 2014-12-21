@@ -7,6 +7,44 @@ class Application_Form_Analysis_Edit extends Zend_Form {
         $config = new Zend_Config_Ini($configFilePath);
         
         $this->setConfig($config);
+        
+        $APwrapper = new Zend_Form_SubForm();
+        $APwrapper->setLegend('Analyzovane problemy');
+        $APwrapper->addElement('submit', 'APpridat', array(
+            'label' => 'Pridat'
+        ));
+        
+        $OPwrapper = new Zend_Form_SubForm();
+        $OPwrapper->setLegend('Vystupne problemy');
+        $OPwrapper->addElement('submit', 'OPpridat', array(
+            'label' => 'Pridat'
+        ));
+        
+        $this->addSubForm($APwrapper, 'analyzedproblems');
+        $this->addSubForm($OPwrapper, 'outputproblems');
+        
+        $this->addElement('submit', 'ulozit', array(
+            'label' => 'Ulozit'
+        ));
+        
+        $this->addElement('submit', 'spat', array(
+            'label' => 'Spat'
+        ));
+    }
+    
+    public function addAP(array $data) {       
+        $APwrapper = $this->getSubForm('analyzedproblems');
+        $APsubform = new Zend_Form_SubForm();  
+        $APsubform->addElement('hidden', 'id_analyza-' . $data['id_analyza']);
+        $APsubform->addElement('hidden', 'id_problem-' . $data['id_problem']);
+        $APsubform->addElement('html', 'APnazov-' . $data['id_analyza'] . $data['id_problem'], array(
+            'value' => '<a href="/tmp/Strateg/public/problem/edit/id/' . $data['id_problem'] . '">' . $data["name"] . '</a>'
+        ));          
+        $APsubform->addElement('textarea', 'APpopis-' . $data['id_analyza'] . $data['id_problem'], array(
+            'rows' => 3,
+            'value' => $data['popis']
+        ));
+        $APwrapper->addSubForm($APsubform, $data['name']);
     }
 
 }

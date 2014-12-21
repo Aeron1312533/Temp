@@ -60,6 +60,15 @@ public function init() {
                 $this->_helper->redirector('list');
             }
             
+            if(isset($formData['analyzedproblems']['APpridat'])) {
+                
+                return;
+            }
+            
+            if(isset($formData['outputproblems']['OPpridat'])) {
+                return;
+            }
+            
             if ($form->isValid($formData)) {
                 $id = (int)$this->getParam('id');
                 $analysis = new Application_Model_DbTable_Analysis();
@@ -74,7 +83,22 @@ public function init() {
             $id = $this->getParam('id', 0);
             if ($id > 0) {
                 $analysis = new Application_Model_DbTable_Analysis();
+                $problemAnalysis = new Application_Model_DbTable_ProblemAnalysis();
+                
                 $form->populate($analysis->getAnalysis($id));
+                $rows = $problemAnalysis->getProblemAnalysis(null, $id);
+
+                foreach ($rows as $row) {
+                    $problem = new Application_Model_DbTable_Problem();
+                    $problemRow = $problem->getProblem($row->id_problem);
+                        
+                    $form->addAP(array(
+                        'name' => $problemRow['nazov'],
+                        'id_analyza' => $id,
+                        'id_problem' => $problemRow['id'],
+                        'popis' => $row->popis
+                    ));
+                }
             }
         }
     }
