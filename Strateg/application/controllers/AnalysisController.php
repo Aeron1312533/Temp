@@ -132,15 +132,17 @@ public function init() {
             }
     }
     
-    private function maybeDeletePA() {
+    private function maybeDeletePA($formData) {
         $form = $this->view->form;
         $id_analyza = $form->getElement('id')->getValue();
-        $aps = $form->getSubForm('analyzedproblems')->getSubForms();echo count($aps);
-        $ops = $form->getSubForm('outputproblems')->getSubForms();echo count($ops);
+        $aps = $form->getSubForm('analyzedproblems')->getSubForms();
+        $ops = $form->getSubForm('outputproblems')->getSubForms();
         // prejdi vstupne problemy:
-        /*foreach ($aps as $ap) { echo 'v';
-            $id_problem = $ap->getElement('id_problem')->getValue();echo $id_problem;
-            if(isset($ap->getElement('remove'))) {
+        foreach ($aps as $ap) {
+            $name = $ap->getName();
+            
+            if (array_key_exists('remove', $formData['analyzedproblems'][$name])) {
+                $id_problem = $formData['analyzedproblems'][$name]['id_problem'];
                 $this->deletePA($id_problem, $id_analyza);
             }
         }echo 'vystupne:';
@@ -150,7 +152,7 @@ public function init() {
             if(isset($op['remove'])) {
                 $this->deletePA($id_problem, $id_analyza);
             }
-        }*/
+        }
     }
     
     private function addPA($id_problem, $id_analyza, $vstup) {
@@ -218,7 +220,7 @@ public function init() {
         $this->maybeAddInputPA($formData);
         $this->maybeAddOutputPA($formData);
         // vymazat pa-vazbu:
-        $this->maybeDeletePA();
+        $this->maybeDeletePA($formData);
         // ulozit analyzu:
         if ($form->isValid($formData)) {
             $this->update();
