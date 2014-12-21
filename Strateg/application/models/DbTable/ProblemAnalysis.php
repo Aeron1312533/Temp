@@ -6,16 +6,19 @@ class Application_Model_DbTable_ProblemAnalysis extends Zend_Db_Table_Abstract
     protected $_name = 'problem_analyza';
     protected $_primary = array('id_problem', 'id_analyza');
 
-    public function getProblemAnalysis($id_problem, $id_analyza)
+    public function getProblemAnalysis($id_problem = null, $id_analyza = null)
     {
-        $id_problem = (int)$id_problem;
-        $id_analyza = (int)$id_analyza;
-        $row = $this->fetchRow('id_problem = ' . $id_problem . 
-                ' and id_analyza = '. $id_analyza);
-        if (!$row) {
-            throw new Exception("Could not find row $id_problem $id_analyza");
+        if (is_null($id_problem) && is_null($id_analyza)) {
+            throw new Exception('Id problem and id analysis not set');
         }
-        return $row->toArray();
+        
+        $where = !is_null($id_problem) ? 'id_problem = ' . (int) $id_problem : '';
+        $where .= !empty($where) && !is_null($id_analyza) ? 'AND' : '';
+        $where .= !is_null($id_analyza) ? 'id_analyza = '. (int) $id_analyza : '';
+        
+        $rows = $this->fetchAll($where);
+
+        return $rows;
     }
 
     public function addProblemAnalysis($data) {
