@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS `problem_analyza` (
   `id_problem` int(10) unsigned NOT NULL,
   `id_analyza` int(10) unsigned NOT NULL,
   `popis` text NULL,
+  `vstup` BOOL NOT NULL DEFAULT 1,
   CONSTRAINT pk_id_problem_analyza PRIMARY KEY (id_problem, id_analyza),
   CONSTRAINT fk_id_problem_problem_analyza FOREIGN KEY (id_problem)
   REFERENCES problem(id) ON DELETE CASCADE,
@@ -45,6 +46,7 @@ CREATE TABLE IF NOT EXISTS `problem_navrh` (
   `id_problem` int(10) unsigned NOT NULL,
   `id_navrh` int(10) unsigned NOT NULL,
   `popis` text NULL,
+  `uplne` BOOL NOT NULL DEFAULT 0,
   CONSTRAINT pk_id_problem_navrh PRIMARY KEY (id_problem, id_navrh),
   CONSTRAINT fk_id_problem_problem_navrh FOREIGN KEY (id_problem)
   REFERENCES problem(id) ON DELETE CASCADE,

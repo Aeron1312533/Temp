@@ -1,6 +1,6 @@
 <?php
 
-class ProblemController extends Strateg_Controller_Action
+class ProposalController extends Strateg_Controller_Action
 {
 
     public function init() {
@@ -12,18 +12,14 @@ class ProblemController extends Strateg_Controller_Action
     }
     
     public function listAction() {
-        $problems = new Application_Model_DbTable_Problem();
-        $this->view->problems = $problems->fetchAll();        
+        $proposals = new Application_Model_DbTable_Proposal();
+        $this->view->proposals = $proposals->fetchAll();
+        
+        
     }
     
     public function addAction() {
-        $type = $this->getParam('type', 'sp');
-        if ($type == 'sp') {
-            $form = new Application_Form_Problem_AddSP();
-        }
-        else {
-            $form = new Application_Form_Problem_AddOP();        
-        }
+        $form = new Application_Form_Proposal_Add();
         $this->view->form = $form;
 
         if ($this->getRequest()->isPost()) {
@@ -37,10 +33,10 @@ class ProblemController extends Strateg_Controller_Action
             }
             
             if ($form->isValid($formData)) {
-                $problem = new Application_Model_DbTable_Problem();
-                $problem->addProblem($form->getValues());
+                $proposal = new Application_Model_DbTable_Proposal();
+                $proposal->addProposal($form->getValues());
                 $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-                $flashMessenger->addMessage('Problem pridany', null, Strateg_MyFlashMessenger_Message::SUCCESS);
+                $flashMessenger->addMessage('Navrh pridany', null, Strateg_MyFlashMessenger_Message::SUCCESS);
                 $this->_helper->redirector('list');
             } else {
                 $form->populate($formData);
@@ -50,13 +46,8 @@ class ProblemController extends Strateg_Controller_Action
 
     public function editAction()
     {
-        $type = $this->getParam('type', 'sp');
-        if ($type == 'sp') {
-            $form = new Application_Form_Problem_EditSP();
-        }
-        else {
-            $form = new Application_Form_Problem_EditOP();            
-        }        
+        $form = new Application_Form_Proposal_Edit();
+        
         $this->view->form = $form;
 
         if ($this->getRequest()->isPost()) {
@@ -71,10 +62,10 @@ class ProblemController extends Strateg_Controller_Action
             
             if ($form->isValid($formData)) {
                 $id = (int)$this->getParam('id');
-                $problem = new Application_Model_DbTable_Problem();
-                $problem->updateProblem($id, $form->getValues());
+                $proposal = new Application_Model_DbTable_Proposal();
+                $proposal->updateProposal($id, $form->getValues());
                 $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-                $flashMessenger->addMessage('Problem ulozeny', null, Strateg_MyFlashMessenger_Message::SUCCESS);
+                $flashMessenger->addMessage('Navrh ulozeny', null, Strateg_MyFlashMessenger_Message::SUCCESS);
                 $this->_helper->redirector('list');
             } else {
                 $form->populate($formData);
@@ -82,16 +73,15 @@ class ProblemController extends Strateg_Controller_Action
         } else { //zobrazujeme
             $id = $this->getParam('id', 0);
             if ($id > 0) {
-                $problem = new Application_Model_DbTable_Problem();
-                $problem_array = $problem->getProblem($id);
-                $form->populate($problem_array);
+                $proposal = new Application_Model_DbTable_Proposal();
+                $form->populate($proposal->getProposal($id));
             }
         }
     }
 
     public function deleteAction()
     {
-        $form = new Application_Form_Problem_Delete();
+        $form = new Application_Form_Proposal_Delete();
         $this->view->form = $form;
         
         if ($this->getRequest()->isPost()) {
@@ -103,20 +93,18 @@ class ProblemController extends Strateg_Controller_Action
             
             if ($form->isValid($formData)) {
                 $id = (int)$form->getValue('id');
-                $problem = new Application_Model_DbTable_Problem();
-                $problem->deleteProblem($id);
-                $pa_vazby = new Application_Model_DbTable_ProblemAnalysis();
-                $pa_vazby->deletePAbyProblem($id);
+                $proposal = new Application_Model_DbTable_Proposal();
+                $proposal->deleteProposal($id);
                 $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-                $flashMessenger->addMessage('Problem vymazany', null, Strateg_MyFlashMessenger_Message::SUCCESS);
+                $flashMessenger->addMessage('Navrh vymazany', null, Strateg_MyFlashMessenger_Message::SUCCESS);
             }
             
             $this->_helper->redirector('list');
         } else { //zobrazujeme
             $id = $this->_getParam('id', 0);
             if ($id > 0) {
-                $problem = new Application_Model_DbTable_Problem();
-                $form->populate($problem->getProblem($id));
+                $proposal = new Application_Model_DbTable_Proposal();
+                $form->populate($proposal->getProposal($id));
             }
         }
     }

@@ -1,20 +1,46 @@
+<h1>Subjektivne problemy</h1>
 <p><a href="<?php echo $this->url(array('controller'=>'problem',
-        'action'=>'add'));?>">Pridat novy problem</a></p>
+        'action'=>'add','type'=>'sp'));?>">Pridat novy subjektivny problem</a></p>
 <table class="table table-striped table-bordered table-hover table-condensed">
 <tr>
     <th>Nazov</th>
     <th>&nbsp;</th>
 </tr>
-<?php foreach($this->problems as $problem) : ?>
+<?php foreach($this->problems as $problem) { 
+    if ($problem->subjektivny) { ?>
 <tr>
     <td><?php echo $this->escape($problem->nazov);?></td>
 
     <td>
         <a href="<?php echo $this->url(array('controller'=>'problem',
-            'action'=>'edit', 'id'=>$problem->id));?>">Upravit</a>
+            'action'=>'edit', 'id'=>$problem->id, 'type'=>'sp'));?>">Upravit</a>
         <a href="<?php echo $this->url(array('controller'=>'problem',
             'action'=>'delete', 'id'=>$problem->id));?>">Vymazat</a>
     </td>
 </tr>
-<?php endforeach; ?>
+    <?php }    
+} ?>
+</table>
+<h1>Objektivne problemy</h1>
+<p><a href="<?php echo $this->url(array('controller'=>'problem',
+        'action'=>'add','type'=>'op'));?>">Pridat novy objektivny problem</a></p>
+<table class="table table-striped table-bordered table-hover table-condensed">
+<tr>
+    <th>Nazov</th>
+    <th>&nbsp;</th>
+</tr>
+<?php foreach($this->problems as $problem) { 
+    if (!$problem->subjektivny) { ?>
+<tr>
+    <td><?php echo $this->escape($problem->nazov);?></td>
+
+    <td>
+        <a href="<?php echo $this->url(array('controller'=>'problem',
+            'action'=>'edit', 'id'=>$problem->id, 'type'=>'op'));?>">Upravit</a>
+        <a href="<?php echo $this->url(array('controller'=>'problem',
+            'action'=>'delete', 'id'=>$problem->id));?>">Vymazat</a>
+    </td>
+</tr>
+    <?php }    
+} ?>
 </table>
