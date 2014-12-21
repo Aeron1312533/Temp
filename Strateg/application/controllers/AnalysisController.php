@@ -3,7 +3,7 @@
 class AnalysisController extends Strateg_Controller_Action
 {
 
-    public function init() {
+public function init() {
         parent::init();
     }
     
