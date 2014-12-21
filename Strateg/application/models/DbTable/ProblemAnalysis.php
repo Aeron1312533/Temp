@@ -21,8 +21,8 @@ class Application_Model_DbTable_ProblemAnalysis extends Zend_Db_Table_Abstract
         return $rows;
     }
 
-    public function addProblemAnalysis($data) {
-        $this->insert($data);
+    public function addProblemAnalysis($id_problem, $id_analyza, $vstup) {
+        $this->insert(array($id_problem, $id_analyza, '', (int)$vstup));
     }
 
     public function updateProblemAnalysis($id_problem, $id_analyza, $data) {
