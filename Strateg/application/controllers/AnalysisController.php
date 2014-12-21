@@ -21,100 +21,43 @@ public function init() {
     public function addAction() {
         $form = new Application_Form_Analysis_Add();
         $this->view->form = $form;
-
+        
         if ($this->getRequest()->isPost()) {
-            $formData = $this->getRequest()->getPost();
-            
-            /**
-             * if back button was pressed
-             */
-            if(isset($formData["spat"])) {
+            $formData = $this->getRequest()->getPost();  
+            // spat:
+            if (isset($formData["spat"])) {
                 $this->_helper->redirector('list');
             }
-            
-            if ($form->isValid($formData)) {
-                $analysis = new Application_Model_DbTable_Analysis();
-                $analysis->addAnalysis($form->getValues());
-                $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-                $flashMessenger->addMessage('Analyza pridana', null, Strateg_MyFlashMessenger_Message::SUCCESS);
-                $this->_helper->redirector('list');
-            } else {
-                $form->populate($formData);
+            // pridat:
+            if (isset($formData["pridat"])) {
+                if ($form->isValid($formData)) {
+                    $this->add();
+                    $this->_helper->redirector('list');
+                } else {
+                    $form->populate($formData);
+                }
             }
         }
     }
 
     public function editAction()
     {
-        $form = new Application_Form_Analysis_Edit();
-        
+        $form = new Application_Form_Analysis_Edit();        
         $this->view->form = $form;
+        $id = $this->getParam('id', 0);
+        if ($id > 0) {
+            $analysis = new Application_Model_DbTable_Analysis();                
+            $form->populate($analysis->getAnalysis($id));                
+            $form->initAPselect($id);              
+            $form->initOPselect($id);
+            $this->showAPs($id);
+            $this->showOPs($id);
+        }
         $formData = $this->getRequest()->getPost();
         $form->populate($formData);
         
         if ($this->getRequest()->isPost()) {
-            
-            /**
-             * if back button was pressed
-             */
-            if(isset($formData["spat"])) {
-                $this->_helper->redirector('list');
-            }
-            /**
-             * add input problem to this analysis
-             */
-            if(isset($formData['analyzedproblems']['APpridat'])) {
-                    if ($formData['analyzedproblems']['APselect'] != '0') {
-                        $pa_vazba = new Application_Model_DbTable_ProblemAnalysis();
-                        $pa_vazba->addProblemAnalysis($formData['analyzedproblems']['APselect'],
-                                $formData['editanalysis']['id'], 1);
-                    }
-                    else {
-                        $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-                        $flashMessenger->addMessage('Prosim vyberte vstupny problem.', null, Strateg_MyFlashMessenger_Message::DANGER);
-                    }
-                    return;
-            }
-            /**
-             * add output problem to this analysis
-             */
-            if(isset($formData['outputproblems']['OPpridat'])) {
-                return;
-            }
-            
-            if ($form->isValid($formData)) {
-                $id = (int)$this->getParam('id');
-                $analysis = new Application_Model_DbTable_Analysis();
-                $analysis->updateAnalysis($id, $form->getValues());
-                $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-                $flashMessenger->addMessage('Analyza ulozena', null, Strateg_MyFlashMessenger_Message::SUCCESS);
-                $this->_helper->redirector('list');
-            } else {
-                $form->populate($formData);
-            }
-            
-        } else { //zobrazujeme
-            $id = $this->getParam('id', 0);
-            if ($id > 0) {
-                $analysis = new Application_Model_DbTable_Analysis();
-                $problemAnalysis = new Application_Model_DbTable_ProblemAnalysis();
-                
-                $form->populate($analysis->getAnalysis($id));
-                $rows = $problemAnalysis->getProblemAnalysis(null, $id);
-
-                foreach ($rows as $row) {
-                    $problem = new Application_Model_DbTable_Problem();
-                    $problemRow = $problem->getProblem($row->id_problem);
-                        
-                    $form->addAP(array(
-                        'name' => $problemRow['nazov'],
-                        'id_analyza' => $id,
-                        'id_problem' => $problemRow['id'],
-                        'popis' => $row->popis
-                    ));
-                }
-                $form->initAPselect($id);
-            }
+            $this->editButtons($form, $formData);
         }
     }
 
@@ -126,22 +69,14 @@ public function init() {
         if ($this->getRequest()->isPost()) {
             $formData = $this->getRequest()->getPost();
             
-            if(isset($formData["nie"])) {
-                $this->_helper->redirector('list');
+            if (isset($formData["ano"])) {
+                if ($form->isValid($formData)) {
+                    $this->delete();
+                }            
             }
-            
-            if ($form->isValid($formData)) {
-                $id = (int)$form->getValue('id');
-                $analysis = new Application_Model_DbTable_Analysis();
-                $analysis->deleteAnalysis($id);
-                $pa_vazby = new Application_Model_DbTable_ProblemAnalysis();
-                $pa_vazby->deletePAbyAnalysis($id);
-                $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-                $flashMessenger->addMessage('Analyza vymazana.', null, Strateg_MyFlashMessenger_Message::SUCCESS);
-            }
-            
             $this->_helper->redirector('list');
-        } else { //zobrazujeme
+        } 
+        else { //zobrazujeme
             $id = $this->_getParam('id', 0);
             if ($id > 0) {
                 $analysis = new Application_Model_DbTable_Analysis();
@@ -149,6 +84,147 @@ public function init() {
             }
         }
     }
+    
+    private function add() {
+        $analysis = new Application_Model_DbTable_Analysis();
+        $analysis->addAnalysis($this->view->form->getValues());
+        $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+        $flashMessenger->addMessage('Analyza pridana', null,
+            Strateg_MyFlashMessenger_Message::SUCCESS);
+    }
+    
+    private function delete() {
+        $id = (int)$this->view->form->getValue('id');
+        $analysis = new Application_Model_DbTable_Analysis();
+        $analysis->deleteAnalysis($id);
+        $pa_vazby = new Application_Model_DbTable_ProblemAnalysis();
+        $pa_vazby->deletePAbyAnalysis($id);
+        $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+        $flashMessenger->addMessage('Analyza vymazana.', null, 
+            Strateg_MyFlashMessenger_Message::SUCCESS);        
+    }
 
+    private function maybeAddInputPA($formData) {
+        if(isset($formData['analyzedproblems']['APpridat'])) {
+            if ((int)$formData['analyzedproblems']['APselect'] >= 1) {
+                $this->addPA($formData['analyzedproblems']['APselect'], $formData['id'], 1);
+            }
+            else {
+                $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+                $flashMessenger->addMessage('Prosim vyberte vstupny problem.',
+                    null, Strateg_MyFlashMessenger_Message::DANGER);
+            }
+            $this->_helper->redirector('edit','analysis','default',array('id'=>($this->getParam('id'))));
+        }
+    }
+    
+    private function maybeAddOutputPA($formData) {
+        if(isset($formData['outputproblems']['OPpridat'])) {
+            if ((int)$formData['outputproblems']['OPpridat'] >= 1) {
+                $this->addPA($formData['outputproblems']['OPselect'], $formData['id'], 0);
+            }
+            else {
+                $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+                $flashMessenger->addMessage('Prosim vyberte vstupny problem.',
+                    null, Strateg_MyFlashMessenger_Message::DANGER);
+                }
+                $this->_helper->redirector('edit','analysis','default',array('id'=>($this->getParam('id'))));
+            }
+    }
+    
+    private function maybeDeletePA() {
+        $form = $this->view->form;
+        $id_analyza = $form->getElement('id')->getValue();
+        $aps = $form->getSubForm('analyzedproblems')->getSubForms();echo count($aps);
+        $ops = $form->getSubForm('outputproblems')->getSubForms();echo count($ops);
+        // prejdi vstupne problemy:
+        /*foreach ($aps as $ap) { echo 'v';
+            $id_problem = $ap->getElement('id_problem')->getValue();echo $id_problem;
+            if(isset($ap->getElement('remove'))) {
+                $this->deletePA($id_problem, $id_analyza);
+            }
+        }echo 'vystupne:';
+        // prejdi vystupne problemy:
+        foreach ($ops as $op) {echo 'y';
+            $id_problem = $op->getElement('id_problem')->getValue();echo $id_problem;
+            if(isset($op['remove'])) {
+                $this->deletePA($id_problem, $id_analyza);
+            }
+        }*/
+    }
+    
+    private function addPA($id_problem, $id_analyza, $vstup) {
+        $pa_vazba = new Application_Model_DbTable_ProblemAnalysis();
+        $pa_vazba->addProblemAnalysis($id_problem, $id_analyza, $vstup);
+        $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+        if ((int)$vstup == 1) {
+            $flashMessenger->addMessage('Vstupny problem pridany.',
+                    null, Strateg_MyFlashMessenger_Message::SUCCESS);
+        }
+        else {
+            $flashMessenger->addMessage('Vystupny problem pridany.',
+                null, Strateg_MyFlashMessenger_Message::SUCCESS);
+        }
+    }
+    
+    private function deletePA($id_problem, $id_analyza) {
+        $pa_vazba = new Application_Model_DbTable_ProblemAnalysis();
+        $pa_vazba->deleteProblemAnalysis($id_problem, $id_analyza);
+        $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+        $flashMessenger->addMessage('Vazba vymazana.',
+            null, Strateg_MyFlashMessenger_Message::SUCCESS);
+        $this->_helper->redirector('edit','analysis','default',array('id'=>$id_analyza));
+    }
+    
+    private function update() {
+        $form = $this->view->form;
+        $analysis = new Application_Model_DbTable_Analysis();
+        $data = array('id'=>$form->getValue('id'), 'nazov'=>$form->getValue('nazov'),
+            'popis'=>$form->getValue('popis'), 'autor'=>$form->getValue('autor'));
+        $analysis->updateAnalysis($form->getValue('id'),$data);
+        $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+        $flashMessenger->addMessage('Analyza ulozena', null, Strateg_MyFlashMessenger_Message::SUCCESS);
+        //$this->_helper->redirector('edit','analysis','default',array('id'=>($this->getParam('id'))));
+    }
+    
+    private function showAPs($id) {
+        $problemAnalysis = new Application_Model_DbTable_ProblemAnalysis();
+        $rows = $problemAnalysis->getProblemAnalysis('id_analyza = '. $id.' and vstup = 1');
+        $problem = new Application_Model_DbTable_Problem();
+        foreach ($rows as $row) {
+            $problemRow = $problem->getProblem($row->id_problem);                        
+            $this->view->form->addAP(array('name' => $problemRow['nazov'],'id_analyza' => $id,
+                'id_problem' => $problemRow['id'],'popis' => $row->popis));
+                }
+    }
+    
+    private function showOPs($id) {
+        $problemAnalysis = new Application_Model_DbTable_ProblemAnalysis();
+        $rows = $problemAnalysis->getProblemAnalysis('id_analyza = '. $id.' and vstup = 0');
+        $problem = new Application_Model_DbTable_Problem();
+        foreach ($rows as $row) {
+            $problemRow = $problem->getProblem($row->id_problem);                        
+            $this->view->form->addOP(array('name' => $problemRow['nazov'],'id_analyza' => $id,
+                'id_problem' => $problemRow['id'],'popis' => $row->popis));
+                }
+    }
+    
+    private function editButtons($form, $formData) {
+        // tlacidlo spat:
+        if(isset($formData["spat"])) {
+            $this->_helper->redirector('list');
+        }
+        // tlacidla pridat vstupny/vystupny problem:
+        $this->maybeAddInputPA($formData);
+        $this->maybeAddOutputPA($formData);
+        // vymazat pa-vazbu:
+        $this->maybeDeletePA();
+        // ulozit analyzu:
+        if ($form->isValid($formData)) {
+            $this->update();
+        } else {
+            $form->populate($formData);
+        } 
+    }
 }
 

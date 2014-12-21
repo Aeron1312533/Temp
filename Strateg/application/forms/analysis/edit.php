@@ -10,15 +10,14 @@ class Application_Form_Analysis_Edit extends Zend_Form {
         $APwrapper = new Zend_Form_SubForm();
         $APwrapper->setLegend('Analyzovane problemy');
         $APwrapper->addElement('submit', 'APpridat', array(
-            'label' => 'Pridat'
+            'label' => 'Pridat vstupny problem'
         ));
         
         $OPwrapper = new Zend_Form_SubForm();
         $OPwrapper->setLegend('Vystupne problemy');
         $OPwrapper->addElement('submit', 'OPpridat', array(
-            'label' => 'Pridat'
+            'label' => 'Pridat vystupny problem'
         ));
-        $OPwrapper->addElement('select', 'OPselect');
         
         $this->addSubForm($APwrapper, 'analyzedproblems');
         $this->addSubForm($OPwrapper, 'outputproblems');
@@ -38,13 +37,10 @@ class Application_Form_Analysis_Edit extends Zend_Form {
                 '0' => 'Vyberte vstupny problem'
             )
         ));  
-        
-        $pa = new Application_Model_DbTable_ProblemAnalysis();
-        $problem = new Application_Model_DbTable_Problem();
         $dbAdapter = Zend_Db_Table::getDefaultAdapter();
         
-        $sql = 'select * from problem where not exists (select * from problem_anal'.
-                'yza where problem_analyza.id_problem = problem.id)';
+        $sql = 'select * from problem where not exists (select * from problem_analyza where problem_anal'.
+                'yza.id_problem = problem.id and problem_analyza.id_analyza = '.$id_analyza.')';
         
         $statement = $dbAdapter->query($sql);
         $newSelectableAPs = $statement->fetchAll();
@@ -53,19 +49,65 @@ class Application_Form_Analysis_Edit extends Zend_Form {
             $this->getSubForm('analyzedproblems')->getElement('APselect')->addMultiOption($row['id'],$row['nazov']);
         }        
     }
+
+    public function initOPselect($id_analyza) {
+        $this->getSubForm('outputproblems')->addElement('select', 'OPselect', array(
+            'multiOptions' => array (
+                '0' => 'Vyberte vystupny problem'
+            )
+        ));  
+        $dbAdapter = Zend_Db_Table::getDefaultAdapter();
+        
+        $sql = 'select * from problem where not(subjektivny) and not exists (select * from proble'.
+                'm_analyza where problem_analyza.id_problem = problem.id and problem_analyza.i'.
+                'd_analyza = '.$id_analyza.')';
+        
+        $statement = $dbAdapter->query($sql);
+        $newSelectableOPs = $statement->fetchAll();
+        
+        foreach ($newSelectableOPs as $row) {
+            $this->getSubForm('outputproblems')->getElement('OPselect')->addMultiOption($row['id'],$row['nazov']);
+        }        
+    }
     
     public function addAP(array $data) {       
         $APwrapper = $this->getSubForm('analyzedproblems');
         $APsubform = new Zend_Form_SubForm();
-        $APsubform->addElement('hidden', 'id_problem-' . $data['id_problem']);
-        $APsubform->addElement('html', 'APnazov-' . $data['id_analyza'] . $data['id_problem'], array(
-            'value' => '<a href="/tmp/Strateg/public/problem/edit/id/' . $data['id_problem'] . '">' . $data["name"] . '</a>'
-        ));          
-        $APsubform->addElement('textarea', 'APpopis-' . $data['id_analyza'] . $data['id_problem'], array(
+        // hidden id_problem
+        $APsubform->addElement('hidden', 'id_problem', array('value'=>$data['id_problem']));
+        // link to problem
+        $APsubform->addElement('html', 'APnazov-' . $data['id_analyza'] .'-'.$data['id_problem'], 
+                array('value' => '<a href="/tmp/Strateg/public/problem/edit/id/' . 
+                    $data['id_problem'] . '">' . $data["name"] . '</a>'
+        ));      
+        // delete button
+        $APsubform->addElement('submit', 'remove', array('label'=>'Vymazat vazbu'));
+        // P-A relation description
+        $APsubform->addElement('textarea', 'popis',array(
             'rows' => 3,
             'value' => $data['popis']
         ));
         $APwrapper->addSubForm($APsubform, $data['name']);
+    }
+    
+    public function addOP(array $data) {       
+        $OPwrapper = $this->getSubForm('outputproblems');
+        $OPsubform = new Zend_Form_SubForm();
+        // hidden id_problem
+        $OPsubform->addElement('hidden', 'id_problem', array('value'=>$data['id_problem']));
+        // link to problem
+        $OPsubform->addElement('html', 'OPnazov-' . $data['id_analyza'] .'-'.$data['id_problem'], 
+                array('value' => '<a href="/tmp/Strateg/public/problem/edit/id/' . 
+                    $data['id_problem'] . '">' . $data["name"] . '</a>'
+        ));      
+        // delete button
+        $OPsubform->addElement('submit', 'remove', array('label'=>'Vymazat vazbu'));
+        // P-A relation description
+        $OPsubform->addElement('textarea', 'popis', array(
+            'rows' => 3,
+            'value' => $data['popis']
+        ));
+        $OPwrapper->addSubForm($OPsubform, $data['name']);
     }
 
 }
