@@ -8,33 +8,33 @@ class Application_Form_Analysis_Edit extends Zend_Form {
         $this->setConfig($config);
         
         $APwrapper = new Zend_Form_SubForm();
-        $APwrapper->setLegend('Analyzovane problemy');
+        $APwrapper->setLegend('Analyzované problémy');
         $APwrapper->addElement('submit', 'APpridat', array(
-            'label' => 'Pridat vstupny problem'
+            'label' => 'Pridať vstupný problém'
         ));
         
         $OPwrapper = new Zend_Form_SubForm();
-        $OPwrapper->setLegend('Vystupne problemy');
+        $OPwrapper->setLegend('Výstupné problémy');
         $OPwrapper->addElement('submit', 'OPpridat', array(
-            'label' => 'Pridat vystupny problem'
+            'label' => 'Pridať výstupný problém'
         ));
         
         $this->addSubForm($APwrapper, 'analyzedproblems');
         $this->addSubForm($OPwrapper, 'outputproblems');
         
         $this->addElement('submit', 'ulozit', array(
-            'label' => 'Ulozit'
+            'label' => 'Uložiť'
         ));
         
         $this->addElement('submit', 'spat', array(
-            'label' => 'Spat'
+            'label' => 'Späť'
         ));
     }
     
     public function initAPselect($id_analyza) {
         $this->getSubForm('analyzedproblems')->addElement('select', 'APselect', array(
             'multiOptions' => array (
-                '0' => 'Vyberte vstupny problem'
+                '0' => 'Vyberte vstupný problém'
             )
         ));  
         $dbAdapter = Zend_Db_Table::getDefaultAdapter();
@@ -53,7 +53,7 @@ class Application_Form_Analysis_Edit extends Zend_Form {
     public function initOPselect($id_analyza) {
         $this->getSubForm('outputproblems')->addElement('select', 'OPselect', array(
             'multiOptions' => array (
-                '0' => 'Vyberte vystupny problem'
+                '0' => 'Vyberte výstupný problém'
             )
         ));  
         $dbAdapter = Zend_Db_Table::getDefaultAdapter();
@@ -81,7 +81,7 @@ class Application_Form_Analysis_Edit extends Zend_Form {
                     $data['id_problem'] . '">' . $data["name"] . '</a>'
         ));      
         // delete button
-        $APsubform->addElement('submit', 'remove', array('label'=>'Vymazat vazbu'));
+        $APsubform->addElement('submit', 'remove', array('label'=>'Vymazať väzbu'));
         // P-A relation description
         $APsubform->addElement('textarea', 'popis',array(
             'rows' => 3,
@@ -101,7 +101,7 @@ class Application_Form_Analysis_Edit extends Zend_Form {
                     $data['id_problem'] . '">' . $data["name"] . '</a>'
         ));      
         // delete button
-        $OPsubform->addElement('submit', 'remove', array('label'=>'Vymazat vazbu'));
+        $OPsubform->addElement('submit', 'remove', array('label'=>'Vymazať väzbu'));
         // P-A relation description
         $OPsubform->addElement('textarea', 'popis', array(
             'rows' => 3,

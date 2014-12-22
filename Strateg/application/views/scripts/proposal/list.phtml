@@ -1,8 +1,8 @@
 <p><a href="<?php echo $this->url(array('controller'=>'proposal',
-        'action'=>'add'));?>">Pridat novy navrh</a></p>
+        'action'=>'add'));?>">Nový návrh</a></p>
 <table class="table table-striped table-bordered table-hover table-condensed">
 <tr>
-    <th>Nazov</th>
+    <th>Názov</th>
     <th>&nbsp;</th>
 </tr>
 <?php foreach($this->proposals as $proposal) : ?>
@@ -11,9 +11,9 @@
 
     <td>
         <a href="<?php echo $this->url(array('controller'=>'proposal',
-            'action'=>'edit', 'id'=>$proposal->id));?>">Upravit</a>
+            'action'=>'edit', 'id'=>$proposal->id));?>">Upraviť</a>
         <a href="<?php echo $this->url(array('controller'=>'proposal',
-            'action'=>'delete', 'id'=>$proposal->id));?>">Vymazat</a>
+            'action'=>'delete', 'id'=>$proposal->id));?>">Vymazať</a>
     </td>
 </tr>
 <?php endforeach; ?>

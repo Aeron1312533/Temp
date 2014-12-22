@@ -36,7 +36,7 @@ class ProposalController extends Strateg_Controller_Action
                 $proposal = new Application_Model_DbTable_Proposal();
                 $proposal->addProposal($form->getValues());
                 $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-                $flashMessenger->addMessage('Navrh pridany', null, Strateg_MyFlashMessenger_Message::SUCCESS);
+                $flashMessenger->addMessage('Návrh pridaný.', null, Strateg_MyFlashMessenger_Message::SUCCESS);
                 $this->_helper->redirector('list');
             } else {
                 $form->populate($formData);
@@ -65,7 +65,7 @@ class ProposalController extends Strateg_Controller_Action
                 $proposal = new Application_Model_DbTable_Proposal();
                 $proposal->updateProposal($id, $form->getValues());
                 $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-                $flashMessenger->addMessage('Navrh ulozeny', null, Strateg_MyFlashMessenger_Message::SUCCESS);
+                $flashMessenger->addMessage('Návrh uložený,', null, Strateg_MyFlashMessenger_Message::SUCCESS);
                 $this->_helper->redirector('list');
             } else {
                 $form->populate($formData);
@@ -96,7 +96,7 @@ class ProposalController extends Strateg_Controller_Action
                 $proposal = new Application_Model_DbTable_Proposal();
                 $proposal->deleteProposal($id);
                 $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-                $flashMessenger->addMessage('Navrh vymazany', null, Strateg_MyFlashMessenger_Message::SUCCESS);
+                $flashMessenger->addMessage('Návrh vymazaný', null, Strateg_MyFlashMessenger_Message::SUCCESS);
             }
             
             $this->_helper->redirector('list');
@@ -105,6 +105,7 @@ class ProposalController extends Strateg_Controller_Action
             if ($id > 0) {
                 $proposal = new Application_Model_DbTable_Proposal();
                 $form->populate($proposal->getProposal($id));
+                $form->showTheRest();
             }
         }
     }

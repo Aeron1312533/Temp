@@ -34,7 +34,7 @@ class PAController extends Strateg_Controller_Action
                 $pa_vazba = new Application_Model_DbTable_ProblemAnalysis();
                 $pa_vazba->addProblemAnalysis($form->getValues());
                 $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-                $flashMessenger->addMessage('PA vazba pridana', null, Strateg_MyFlashMessenger_Message::SUCCESS);
+                $flashMessenger->addMessage('PA väzba pridaná.', null, Strateg_MyFlashMessenger_Message::SUCCESS);
                 $this->_helper->redirector('list');
             } else {
                 $form->populate($formData);
@@ -63,7 +63,7 @@ class PAController extends Strateg_Controller_Action
                 $pa_vazba = new Application_Model_DbTable_ProblemAnalysis();
                 $pa_vazba->updateProblemAnalysis($id_problem, $id_analyza, $form->getValues());
                 $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-                $flashMessenger->addMessage('PA vazba ulozena', null, Strateg_MyFlashMessenger_Message::SUCCESS);
+                $flashMessenger->addMessage('PA väzba uložená.', null, Strateg_MyFlashMessenger_Message::SUCCESS);
                 $this->_helper->redirector('list');
             } else {
                 $form->populate($formData);
@@ -97,7 +97,7 @@ class PAController extends Strateg_Controller_Action
                 $pa_vazba = new Application_Model_DbTable_ProblemAnalysis();
                 $pa_vazba->deleteProblem($id_problem, $id_analyza);
                 $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-                $flashMessenger->addMessage('PA vazba vymazana', null, Strateg_MyFlashMessenger_Message::SUCCESS);
+                $flashMessenger->addMessage('PA väzba vymazaná.', null, Strateg_MyFlashMessenger_Message::SUCCESS);
             }
             
             $this->_helper->redirector('list');

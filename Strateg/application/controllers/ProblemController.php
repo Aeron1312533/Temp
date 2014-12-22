@@ -40,7 +40,7 @@ class ProblemController extends Strateg_Controller_Action
                 $problem = new Application_Model_DbTable_Problem();
                 $problem->addProblem($form->getValues());
                 $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-                $flashMessenger->addMessage('Problem pridany', null, Strateg_MyFlashMessenger_Message::SUCCESS);
+                $flashMessenger->addMessage('Problém pridaný.', null, Strateg_MyFlashMessenger_Message::SUCCESS);
                 $this->_helper->redirector('list');
             } else {
                 $form->populate($formData);
@@ -74,7 +74,7 @@ class ProblemController extends Strateg_Controller_Action
                 $problem = new Application_Model_DbTable_Problem();
                 $problem->updateProblem($id, $form->getValues());
                 $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-                $flashMessenger->addMessage('Problem ulozeny', null, Strateg_MyFlashMessenger_Message::SUCCESS);
+                $flashMessenger->addMessage('Problém uložený.', null, Strateg_MyFlashMessenger_Message::SUCCESS);
                 $this->_helper->redirector('list');
             } else {
                 $form->populate($formData);
@@ -108,7 +108,7 @@ class ProblemController extends Strateg_Controller_Action
                 $pa_vazby = new Application_Model_DbTable_ProblemAnalysis();
                 $pa_vazby->deletePAbyProblem($id);
                 $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-                $flashMessenger->addMessage('Problem vymazany', null, Strateg_MyFlashMessenger_Message::SUCCESS);
+                $flashMessenger->addMessage('Problém vymazaný.', null, Strateg_MyFlashMessenger_Message::SUCCESS);
             }
             
             $this->_helper->redirector('list');
@@ -118,6 +118,7 @@ class ProblemController extends Strateg_Controller_Action
                 $problem = new Application_Model_DbTable_Problem();
                 $form->populate($problem->getProblem($id));
             }
+            $form->showTheRest();
         }
     }
 
