@@ -13,7 +13,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
                                               ->read()
                                               ->role);
         } else {
-            Zend_Registry::set('role', 'guest');
+            Zend_Registry::set('role', 'visitor');
         }
 
         $acl = new Application_Model_Acl();

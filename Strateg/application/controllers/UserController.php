@@ -1,13 +1,7 @@
 <?php
 
 class UserController extends Strateg_Controller_Action
-{
-
-    public function init() {
-        /* Initialize action controller here */  
-                //add view
-    }
-    
+{    
     public function indexAction() {
         $this->_helper->redirector('login');
     }
@@ -18,20 +12,27 @@ class UserController extends Strateg_Controller_Action
        
        $layout = $this->_helper->layout();
        $layout->setLayout('layout_login');
-        
               
        if ($this->getRequest()->isPost()) {
             $formData = $this->getRequest()->getPost();            
             
             if ($form->isValid($formData)) {
-             /*   if($this->_processAuth($formData)) {
-                    $this->_helper->redirector('index', 'overview');
-                } else {
-                    Zend_Auth::getInstance()->clearIdentity();
-                    $form->getElement('password')->addError('Incorrect login or password, try again !');
-                }*/
+                $user = new stdClass();
+                $user->username = $formData['username'];
+                $user->password = $formData['password'];
                 
-                $this->redirect('/home/index');
+                if ($this->isAuthenticated($user)) {
+                    $auth = Zend_Auth::getInstance();
+                    $auth->getStorage()->write($user);
+                    $this->redirect('/home/index');
+                    return;
+                }
+              
+                $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+                $flashMessenger->addMessage('Neplatne meno alebo heslo.',
+                    null, Strateg_MyFlashMessenger_Message::DANGER);
+                
+                $this->_helper->redirector('login');
             } else {
                 $form->populate($formData);
             }
@@ -42,6 +43,22 @@ class UserController extends Strateg_Controller_Action
     public function logoutAction() {
         Zend_Auth::getInstance()->clearIdentity();
         $this->_helper->redirector('login');
+    }
+    
+    private function isAuthenticated(&$user) {
+        $config = simplexml_load_file(APPLICATION_PATH . '/configs/users.xml');
+        foreach ($config->user as $person) {                  
+            if ($user->username == $person->username) {
+                if ($person->password == $user->password) {
+                    $user->role = (string) $person->role;
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+       
+        return false;
     }
     
     /*protected function _getAuthAdapter() {

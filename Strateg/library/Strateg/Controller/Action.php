@@ -12,15 +12,15 @@ class Strateg_Controller_Action extends Zend_Controller_Action {
         //get request information
         $resource = $this->getRequest()->getControllerName ();
         $action = $this->getRequest()->getActionName ();
-
+        
         //check permissions
         $acl = Zend_Registry::get('acl');
         if (!$acl->isAllowed(Zend_Registry::get('role'), $resource, $action)){
-            if (Zend_Auth::getInstance()->hasIdentity()) {
-                $this->_forward("index", "home");
-            } else {
-                $this->_forward("login", "user");
-            }
+            $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+            $flashMessenger->addMessage('Na danu akciu nemate opravnenie.',
+                    null, Strateg_MyFlashMessenger_Message::DANGER);
+            $request = $this->getRequest();
+            $this->redirect($request->getHeader('referer'));
         }
         
         //init navigation

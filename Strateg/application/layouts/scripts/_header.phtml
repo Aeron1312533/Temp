@@ -17,7 +17,7 @@
         $options['ulClass'] = 'nav navbar-nav';
         echo $this->navigation()->menu($this->navigation_main)->renderMenu($this->navigation_main, $options); ?>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="#">Odhlásiť</a></li>
+        <li><a href="<?php echo $this->url(array('controller' => 'user', 'action' => 'logout')); ?>">Odhlásiť</a></li>
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
