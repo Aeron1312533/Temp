@@ -22,13 +22,13 @@ class Application_Form_Analysis_Edit extends Zend_Form {
         $this->addSubForm($APwrapper, 'analyzedproblems');
         $this->addSubForm($OPwrapper, 'outputproblems');
         
-        $this->addElement('submit', 'ulozit', array(
+        /*$this->addElement('submit', 'ulozit', array(
             'label' => 'Uložiť'
         ));
         
         $this->addElement('submit', 'spat', array(
             'label' => 'Späť'
-        ));
+        ));*/
     }
     
     public function initAPselect($id_analyza) {

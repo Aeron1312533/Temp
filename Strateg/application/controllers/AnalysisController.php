@@ -206,7 +206,7 @@ public function init() {
         $analysis->updateAnalysis($form->getValue('id'),$data);
         $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
         $flashMessenger->addMessage('Analýza uložená.', null, Strateg_MyFlashMessenger_Message::SUCCESS);
-        //$this->_helper->redirector('edit','analysis','default',array('id'=>($this->getParam('id'))));
+        $this->_helper->redirector('edit','analysis','default',array('id'=>($this->getParam('id'))));
     }
     
     private function showAPs($id) {
