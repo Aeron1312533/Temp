@@ -10,4 +10,14 @@
         <password>katkineheslo</password>
         <role>guest</role>
     </user>
+    <user>
+        <username>tulka</username>
+        <password>nijako1</password>
+        <role>manager</role>
+    </user>
+    <user>
+        <username>tulko</username>
+        <password>parada1</password>
+        <role>guest</role>
+    </user>
 </users>

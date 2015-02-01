@@ -29,7 +29,7 @@ class UserController extends Strateg_Controller_Action
                 }
               
                 $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-                $flashMessenger->addMessage('Neplatne meno alebo heslo.',
+                $flashMessenger->addMessage('Neplatné meno alebo heslo.',
                     null, Strateg_MyFlashMessenger_Message::DANGER);
                 
                 $this->_helper->redirector('login');
@@ -60,35 +60,5 @@ class UserController extends Strateg_Controller_Action
        
         return false;
     }
-    
-    /*protected function _getAuthAdapter() {
-        $db = Zend_Db_Table::getDefaultAdapter();
-        $authAdapter = new Zend_Auth_Adapter_DbTable($db);
-
-        $authAdapter->setTableName('user');
-        $authAdapter->setIdentityColumn('email');
-        $authAdapter->setCredentialColumn('password');
-        $authAdapter->setCredentialTreatment('SHA1(CONCAT(?,password_salt))');
-
-        return $authAdapter;
-    }*/
-    
-   /* protected function _processAuth($formData) {
-        $authAdapter = $this->_getAuthAdapter();       
-        $authAdapter->setIdentity($formData['username']);
-        $authAdapter->setCredential($formData['password']);
-        
-        $auth = Zend_Auth::getInstance();
-        $result = $auth->authenticate($authAdapter);
-        
-        if ($result->isValid()) {
-            $user = $authAdapter->getResultRowObject();
-            $auth->getStorage()->write($user);
-            return true;
-        }
-        
-        return false;
-    }*/
-
 }
 

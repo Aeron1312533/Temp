@@ -3,7 +3,7 @@
 class Application_Form_Analysis_Edit extends Zend_Form {
 
     public function init() {
-        $configFilePath = APPLICATION_PATH . "/forms/analysis/configs/edit.ini";
+        $configFilePath = APPLICATION_PATH . "/forms/Analysis/configs/edit.ini";
         $config = new Zend_Config_Ini($configFilePath);        
         $this->setConfig($config);
         
@@ -22,13 +22,13 @@ class Application_Form_Analysis_Edit extends Zend_Form {
         $this->addSubForm($APwrapper, 'analyzedproblems');
         $this->addSubForm($OPwrapper, 'outputproblems');
         
-        $this->addElement('submit', 'ulozit', array(
+        /*$this->addElement('submit', 'ulozit', array(
             'label' => 'Uložiť'
         ));
         
         $this->addElement('submit', 'spat', array(
             'label' => 'Späť'
-        ));
+        ));*/
     }
     
     public function initAPselect($id_analyza) {
@@ -77,7 +77,7 @@ class Application_Form_Analysis_Edit extends Zend_Form {
         $APsubform->addElement('hidden', 'id_problem', array('value'=>$data['id_problem']));
         // link to problem
         $APsubform->addElement('html', 'APnazov-' . $data['id_analyza'] .'-'.$data['id_problem'], 
-                array('value' => '<a href="/tmp/Strateg/public/problem/edit/id/' . 
+                array('value' => '<a href="../../../problem/edit/id/' . 
                     $data['id_problem'] . '">' . $data["name"] . '</a>'
         ));      
         // delete button
@@ -97,7 +97,7 @@ class Application_Form_Analysis_Edit extends Zend_Form {
         $OPsubform->addElement('hidden', 'id_problem', array('value'=>$data['id_problem']));
         // link to problem
         $OPsubform->addElement('html', 'OPnazov-' . $data['id_analyza'] .'-'.$data['id_problem'], 
-                array('value' => '<a href="/tmp/Strateg/public/problem/edit/id/' . 
+                array('value' => '<a href="../../../problem/edit/id/' . 
                     $data['id_problem'] . '">' . $data["name"] . '</a>'
         ));      
         // delete button

@@ -1,11 +1,12 @@
 <?php
 
-class Application_Form_Problem_EditSP extends Zend_Form {
+class Application_Form_Analysis_Add extends Zend_Form {
 
     public function init() {
-        $configFilePath = APPLICATION_PATH . "/forms/problem/configs/editsp.ini";
+        $configFilePath = APPLICATION_PATH . "/forms/Analysis/configs/add.ini";
         $config = new Zend_Config_Ini($configFilePath);        
         $this->setConfig($config);
     }
+
 }
 

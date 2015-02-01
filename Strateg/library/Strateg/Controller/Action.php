@@ -17,7 +17,7 @@ class Strateg_Controller_Action extends Zend_Controller_Action {
         $acl = Zend_Registry::get('acl');
         if (!$acl->isAllowed(Zend_Registry::get('role'), $resource, $action)){
             $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-            $flashMessenger->addMessage('Na danu akciu nemate opravnenie.',
+            $flashMessenger->addMessage('Pre danú akciu nemáte oprávnenie.',
                     null, Strateg_MyFlashMessenger_Message::DANGER);
             $request = $this->getRequest();
             $this->redirect($request->getHeader('referer'));
