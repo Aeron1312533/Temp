@@ -7,6 +7,5 @@ class Application_Form_Problem_EditSP extends Zend_Form {
         $config = new Zend_Config_Ini($configFilePath);        
         $this->setConfig($config);
     }
-
 }
 

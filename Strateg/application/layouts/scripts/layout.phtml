@@ -10,6 +10,7 @@ echo $this->doctype(); ?>
     <?php echo $this->headScript()->prependFile('https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js')
                                   ->appendFile('http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.0.2/bootstrap.min.js'); ?>
     <?php echo $this->headLink()->prependStylesheet('//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css');  ?>
+    <?php echo $this->headLink()->appendStylesheet($this->baseUrl('/css/strateg.css'));  ?>
 </head>
 <body>
 <div id="wrapper" class="container">

@@ -89,6 +89,49 @@ class ProblemController extends Strateg_Controller_Action
         }
     }
 
+    public function detailAction()
+    {   
+        $type = $this->getParam('type', 'sp');
+        
+        if ($type == 'sp') {
+            $label = 'Detail subjektivneho problemu';
+        }
+        else {
+            $label = 'Detail objektivneho problemu';
+        }      
+        
+        //remove unnecessary elements
+        $form = new Application_Form_Problem_Detail();        
+        $form->addEditButton(Zend_Registry::get('role'));
+            
+        $this->view->form = $form;
+
+        if ($this->getRequest()->isPost()) {
+            $formData = $this->getRequest()->getPost();
+            
+            //redirect to edit if needed
+            if(isset($formData["edit_button"])) {
+                $this->_helper->redirector('edit', 'problem', 'default', array('id' => $this->getParam('id')));
+                return;
+            }
+            
+            /**
+             * if back button was pressed
+             */
+            if(isset($formData["spat"])) {
+                $this->_helper->redirector('list');
+            }
+        } 
+        else { //zobrazujeme
+            $id = $this->getParam('id', 0);
+            if ($id > 0) {
+                $problem = new Application_Model_DbTable_Problem();
+                $problem_array = $problem->getProblem($id);
+                $this->view->problem = $problem_array;
+            }
+        }
+    }
+    
     public function deleteAction()
     {
         $form = new Application_Form_Problem_Delete();

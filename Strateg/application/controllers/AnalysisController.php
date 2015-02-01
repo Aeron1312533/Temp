@@ -44,6 +44,67 @@ public function init() {
         }
     }
 
+    public function detailAction()
+    {              
+        //remove unnecessary elements
+        $form = new Application_Form_Problem_Detail();
+        $form->addEditButton(Zend_Registry::get('role'));
+            
+        $this->view->form = $form;
+
+        if ($this->getRequest()->isPost()) {
+            $formData = $this->getRequest()->getPost();
+            //redirect to edit if needed
+            if(isset($formData["edit_button"])) {
+                $this->_helper->redirector('edit', 'analysis', 'default', array('id' => $this->getParam('id')));
+                return;
+            }
+            
+            /**
+             * if back button was pressed
+             */
+            if(isset($formData["spat"])) {
+                $this->_helper->redirector('list');
+            }
+        } 
+        else { //zobrazujeme
+            $id = $this->getParam('id', 0);
+            if ($id > 0) {
+                $analysis = new Application_Model_DbTable_Analysis();
+                $analysis_array = $analysis->getAnalysis($id);
+                $this->view->analysis = $analysis_array;
+                
+                //analyzovane problemy
+                $problemAnalysis = new Application_Model_DbTable_ProblemAnalysis();
+                $rows = $problemAnalysis->getProblemAnalysis('id_analyza = '. $id.' and vstup = 1');
+                $problem = new Application_Model_DbTable_Problem();
+                $APs = array();
+                
+                 foreach ($rows as $row) {
+                    $problemRow = $problem->getProblem($row->id_problem);                        
+                    $APs[] = array(
+                        'name' => $problemRow['nazov'],
+                        'popis' => $row->popis);
+                }
+                
+                //vystupne problemy
+                $rows = $problemAnalysis->getProblemAnalysis('id_analyza = '. $id.' and vstup = 0');
+                $problem = new Application_Model_DbTable_Problem();
+                $OPs = array();
+                
+                foreach ($rows as $row) {
+                    $problemRow = $problem->getProblem($row->id_problem);                        
+                    $OPs[] = array(
+                        'name' => $problemRow['nazov'],
+                        'popis' => $row->popis);
+                }
+            }
+            
+            $this->view->APs = $APs;
+            $this->view->OPs = $OPs;
+        }
+    }
+    
     public function editAction()
     {
         $form = new Application_Form_Analysis_Edit();        

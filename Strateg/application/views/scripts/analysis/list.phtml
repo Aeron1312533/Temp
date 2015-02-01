@@ -7,7 +7,12 @@
 </tr>
 <?php foreach($this->analyses as $analysis) : ?>
 <tr>
-    <td><?php echo $this->escape($analysis->nazov);?></td>
+    <td class="list_item_name"><a class="detail_link" href="<?php echo $this->url(array('controller'=>'analysis',
+        'action'=>'detail', 'id'=>$analysis->id));?>">
+            <div style="height:100%;width:100%">
+                <?php echo $this->escape($analysis->nazov);?>
+            </div></a>
+    </td>
 
     <td>
         <a href="<?php echo $this->url(array('controller'=>'analysis',

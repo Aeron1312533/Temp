@@ -1,0 +1,22 @@
+td.list_item_name {
+    cursor: pointer;
+}
+
+td.list_item_name:hover {
+    background-color: rgb(252, 248, 227);
+}
+
+a.detail_link {
+    color: black;
+    text-decoration: none;
+}
+
+#other {
+    padding: 0px;
+}
+
+#other dl dt{
+    padding: 0px;
+    margin: 0px;
+    text-align: left;
+}

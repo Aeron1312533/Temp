@@ -1,0 +1,22 @@
+<?php
+//display problem details
+?>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <?php echo $this->problem["nazov"]; ?>
+    </div>
+    <div class="panel-body">
+        <?php echo $this->problem["popis"]; ?>
+    </div>
+    <div id="other" class="panel-footer">
+        <dl class="dl-horizontal">
+            <dt>Autor:</dt>
+            <dd><?php echo $this->problem["autor"]; ?></dd>
+            <dt>Zdroj:</dt>
+            <dd><?php echo $this->problem["zdroj"]; ?></dd>
+        </dl>
+    </div>
+</div>
+<?php
+    echo $this->form ;
+?>

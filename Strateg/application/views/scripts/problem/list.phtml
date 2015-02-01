@@ -9,7 +9,12 @@
 <?php foreach($this->problems as $problem) { 
     if ($problem->subjektivny) { ?>
 <tr>
-    <td><?php echo $this->escape($problem->nazov);?></td>
+    <td class="list_item_name"><a class="detail_link" href="<?php echo $this->url(array('controller'=>'problem',
+        'action'=>'detail', 'id'=>$problem->id, 'type'=>'sp'));?>">
+            <div style="height:100%;width:100%">
+                <?php echo $this->escape($problem->nazov);?>
+            </div></a>
+    </td>
 
     <td>
         <a href="<?php echo $this->url(array('controller'=>'problem',
