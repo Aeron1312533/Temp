@@ -20,3 +20,7 @@ a.detail_link {
     margin: 0px;
     text-align: left;
 }
+
+.detail_description {
+    margin-bottom: 50px;
+}

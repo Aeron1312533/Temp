@@ -19,7 +19,6 @@ class Application_Model_DbTable_ProblemAnalysis extends Zend_Db_Table_Abstract
     }
 
     public function updateProblemAnalysis($id_problem, $id_analyza, $data) {
-        file_put_contents('test', $data);
         $this->update($data, 'id_problem = ' . (int)$id_problem .
                 ' and id_analyza = '. (int)$id_analyza);
     }

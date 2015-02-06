@@ -111,7 +111,7 @@ class ProblemController extends Strateg_Controller_Action
             
             //redirect to edit if needed
             if(isset($formData["edit_button"])) {
-                $this->_helper->redirector('edit', 'problem', 'default', array('id' => $this->getParam('id')));
+                $this->_helper->redirector('edit', 'problem', 'default', array('id' => $this->getParam('id'), 'type' => $type));
                 return;
             }
             
@@ -128,7 +128,66 @@ class ProblemController extends Strateg_Controller_Action
                 $problem = new Application_Model_DbTable_Problem();
                 $problem_array = $problem->getProblem($id);
                 $this->view->problem = $problem_array;
+                
+                //analyzovane problemy
+                $problemAnalysis = new Application_Model_DbTable_ProblemAnalysis();
+                $rows = $problemAnalysis->getProblemAnalysis('id_problem = '. $id.' and vstup = 1');
+                $analysis= new Application_Model_DbTable_Analysis();
+                $APs = array();
+                
+                 foreach ($rows as $row) {
+                    $analysisRow = $analysis->getAnalysis($row->id_analyza);                        
+                    $APs[] = array(
+                        'id' => $row->id_analyza,
+                        'name' => $analysisRow['nazov'],
+                        'popis' => $row->popis);
+                }
+                
+                //vystupne problemy
+                $rows = $problemAnalysis->getProblemAnalysis('id_problem = '. $id.' and vstup = 0');
+                $analysis = new Application_Model_DbTable_Analysis();
+                $OPs = array();
+                
+                foreach ($rows as $row) {
+                    $analysisRow = $analysis->getAnalysis($row->id_analyza);                        
+                    $OPs[] = array(
+                        'id' => $row->id_analyza,
+                        'name' => $analysisRow['nazov'],
+                        'popis' => $row->popis);
+                }
+                
+                //navrhy uplne
+                $problemProposal = new Application_Model_DbTable_ProblemProposal();
+                $rows = $problemProposal->getProblemProposal('id_problem = '. $id.' and uplne = 1');
+                $proposal = new Application_Model_DbTable_Proposal();
+                $FPs = array();
+                
+                foreach ($rows as $row) {
+                    $proposalRow = $proposal->getProposal($row->id_navrh);                        
+                    $FPs[] = array(
+                        'id' => $row->id_navrh,
+                        'name' => $proposalRow['nazov'],
+                        'popis' => $row->popis);
+                }
+                
+                //navrhy ciastocne
+                $rows = $problemProposal->getProblemProposal('id_problem = '. $id.' and uplne = 0');
+                $proposal = new Application_Model_DbTable_Proposal();
+                $PPs = array();
+                
+                foreach ($rows as $row) {
+                    $proposalRow = $proposal->getProposal($row->id_navrh);                        
+                    $PPs[] = array(
+                        'id' => $row->id_navrh,
+                        'name' => $proposalRow['nazov'],
+                        'popis' => $row->popis);
+                }
             }
+            
+            $this->view->FPs = $FPs;
+            $this->view->PPs = $PPs;
+            $this->view->APs = $APs;
+            $this->view->OPs = $OPs;
         }
     }
     
@@ -164,6 +223,5 @@ class ProblemController extends Strateg_Controller_Action
             $form->showTheRest();
         }
     }
-
 }
 

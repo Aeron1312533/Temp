@@ -16,7 +16,8 @@ class Application_Form_Problem_Detail extends Zend_Form {
                 'edit_button',
                 array(
                     'label' => 'Upravit',
-                    'link' => 'bla'
+                    'link' => 'bla',
+                    'class' => 'btn btn-info'
                 )
             );           
         }

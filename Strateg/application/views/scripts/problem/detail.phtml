@@ -1,21 +1,81 @@
 <?php
 //display problem details
 ?>
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <?php echo $this->problem["nazov"]; ?>
-    </div>
-    <div class="panel-body">
-        <?php echo $this->problem["popis"]; ?>
-    </div>
-    <div id="other" class="panel-footer">
-        <dl class="dl-horizontal">
-            <dt>Autor:</dt>
-            <dd><?php echo $this->problem["autor"]; ?></dd>
-            <dt>Zdroj:</dt>
-            <dd><?php echo $this->problem["zdroj"]; ?></dd>
-        </dl>
-    </div>
+<div class="detail_description">
+      <?php
+        echo '<h2>' . $this->problem["nazov"] . '</h2>';
+        echo '<p>' . $this->problem["popis"] . '</p><br />';
+        echo '<p><span>Autor: ' . $this->problem["autor"] . '</span></p>';
+        
+        //ak je subjektivny,tak ma aj zdroj
+        if ($this->problem["subjektivny"]) {
+            echo '<p><span>Zdroj: ' . $this->problem["zdroj"] . '</span></p>';
+        }
+  ?>
+</div>
+<h3>Analýzy, kde je problém vstupom</h3>
+<div class="list-group">
+  <?php
+    foreach ($this->APs as $AP) {
+        echo '<a href="'  . $this->url(array('controller'=>'analysis',
+            'action'=>'detail', 'id'=>$AP['id']), null, true) . '" class="list-group-item">';
+        echo '<h4 class="list-group-item-heading">' . $AP['name'] . '</h4>';
+        echo '<p class="list-group-item-text">' . $AP['popis'] . '</p>';
+        echo '</a>';
+    }
+    
+    if (is_null($this->APs) || empty($this->APs)) {
+        echo '<div class="alert alert-warning">Nebol nájdený žiaden výskyt</div>';
+    }
+  ?>
+</div>
+<h3>Analýzy, kde je problém výstupom</h3>
+<div class="list-group">
+  <?php
+    foreach ($this->OPs as $OP) {
+        echo '<a href="'  . $this->url(array('controller'=>'analysis',
+            'action'=>'detail', 'id'=>$OP['id']), null, true) . '" class="list-group-item">';
+        echo '<h4 class="list-group-item-heading">' . $OP['name'] . '</h4>';
+        echo '<p class="list-group-item-text">' . $OP['popis'] . '</p>';
+        echo '</a>';
+    }
+    
+    if (is_null($this->OPs) || empty($this->OPs)) {
+        echo '<div class="alert alert-warning">Nebol nájdený žiaden výskyt</div>';
+    }
+  ?>
+</div><br />
+<h3>Návrhy, ktoré riešia problém úplne</h3>
+<div class="list-group">
+  <?php
+    foreach ($this->FPs as $FP) {
+        echo '<a href="'  . $this->url(array('controller'=>'proposal',
+            'action'=>'detail', 'id'=>$FP['id']), null, true) . '" class="list-group-item">';
+        echo '<h4 class="list-group-item-heading">' . $FP['name'] . '</h4>';
+        echo '<p class="list-group-item-text">' . $FP['popis'] . '</p>';
+        echo '</a>';
+    }
+    
+    if (is_null($this->FPs) || empty($this->FPs)) {
+        echo '<div class="alert alert-warning">Nebol nájdený žiaden výskyt</div>';
+    }
+  ?>
+</div>
+<h3>Návrhy, ktore riešia problém čiastočne</h3>
+<div class="list-group">
+  <?php
+    foreach ($this->PPs as $PP) {
+        echo '<a href="'  . $this->url(array('controller'=>'proposal',
+            'action'=>'detail', 'id'=>$PP['id']), null, true) . '" class="list-group-item">';
+        echo '<h4 class="list-group-item-heading">' . $PP['name'] . '</h4>';
+        echo '<p class="list-group-item-text">' . $PP['popis'] . '</p>';
+        echo '</a>';
+    }
+    
+    if (is_null($this->PPs) || empty($this->PPs)) {
+        echo '<div class="alert alert-warning">Nebol nájdený žiaden výskyt</div>';
+    }
+  ?>
 </div>
 <?php
     echo $this->form ;

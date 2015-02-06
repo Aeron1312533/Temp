@@ -1,5 +1,5 @@
 <p><a href="<?php echo $this->url(array('controller'=>'analysis',
-        'action'=>'add'));?>">Nová analýza</a></p>
+        'action'=>'add'));?>">Pridať</a></p>
 <table class="table table-striped table-bordered table-hover table-condensed">
 <tr>
     <th>Názov</th>
@@ -15,8 +15,6 @@
     </td>
 
     <td>
-        <a href="<?php echo $this->url(array('controller'=>'analysis',
-            'action'=>'edit', 'id'=>$analysis->id));?>">Upraviť</a>
         <a href="<?php echo $this->url(array('controller'=>'analysis',
             'action'=>'delete', 'id'=>$analysis->id));?>">Vymazať</a>
     </td>

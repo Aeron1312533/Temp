@@ -83,6 +83,7 @@ public function init() {
                  foreach ($rows as $row) {
                     $problemRow = $problem->getProblem($row->id_problem);                        
                     $APs[] = array(
+                        'id' => $row->id_problem,
                         'name' => $problemRow['nazov'],
                         'popis' => $row->popis);
                 }
@@ -95,6 +96,7 @@ public function init() {
                 foreach ($rows as $row) {
                     $problemRow = $problem->getProblem($row->id_problem);                        
                     $OPs[] = array(
+                        'id' => $row->id_problem,
                         'name' => $problemRow['nazov'],
                         'popis' => $row->popis);
                 }
@@ -187,7 +189,7 @@ public function init() {
 
     private function maybeAddInputPA($formData) {
         if(isset($formData['analyzedproblems']['APpridat'])) {
-            if ((int)$formData['analyzedproblems']['APselect'] >= 1) {
+            if (isset($formData['analyzedproblems']['APselect'][0]) && (int)$formData['analyzedproblems']['APselect'][0] >= 1) {
                 $this->addPA($formData['analyzedproblems']['APselect'], $formData['id'], 1);
             }
             else {
@@ -201,7 +203,7 @@ public function init() {
     
     private function maybeAddOutputPA($formData) {
         if(isset($formData['outputproblems']['OPpridat'])) {
-            if ((int)$formData['outputproblems']['OPselect'] >= 1) {
+            if (isset($formData['outputproblems']['OPselect'][0]) && (int)$formData['outputproblems']['OPselect'][0] >= 1) {
                 $this->addPA($formData['outputproblems']['OPselect'], $formData['id'], 0);
             }
             else {
@@ -211,6 +213,31 @@ public function init() {
                 }
                 $this->_helper->redirector('edit','analysis','default',array('id'=>($this->getParam('id'))));
             }
+    }
+    
+     private function maybeEditPA($formData) {
+        $form = $this->view->form;
+        $id_analyza = $form->getElement('id')->getValue();
+        $aps = $form->getSubForm('analyzedproblems')->getSubForms();
+        $ops = $form->getSubForm('outputproblems')->getSubForms();
+        // prejdi vstupne problemy:
+        foreach ($aps as $ap) {
+            $name = $ap->getName();            
+            if (array_key_exists('edit', $formData['analyzedproblems'][$name])) {
+                $id_problem = $formData['analyzedproblems'][$name]['id_problem'];
+                $popis = $formData['analyzedproblems'][$name]['popis'];
+                $this->editPA($id_problem, $id_analyza, array ('popis' => $popis));
+            }
+        }
+        // prejdi vystupne problemy:
+        foreach ($ops as $op) {
+           $name = $op->getName();            
+            if (array_key_exists('edit', $formData['outputproblems'][$name])) {
+                $id_problem = $formData['outputproblems'][$name]['id_problem'];
+                $popis = $formData['outputproblems'][$name]['popis'];
+                $this->editPA($id_problem, $id_analyza, array('popis' => $popis));
+            }
+        }
     }
     
     private function maybeDeletePA($formData) {
@@ -236,9 +263,13 @@ public function init() {
         }
     }
     
-    private function addPA($id_problem, $id_analyza, $vstup) {
+    private function addPA($array_problems, $id_analyza, $vstup) {
         $pa_vazba = new Application_Model_DbTable_ProblemAnalysis();
-        $pa_vazba->addProblemAnalysis($id_problem, $id_analyza, $vstup);
+        
+        //pridame vybrane problemy
+        foreach ($array_problems as $id_problem) {
+            $pa_vazba->addProblemAnalysis($id_problem, $id_analyza, $vstup);
+        }
         $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
         if ((int)$vstup == 1) {
             $flashMessenger->addMessage('Vstupný problém pridaný.',
@@ -250,6 +281,15 @@ public function init() {
         }
     }
     
+    private function editPA($id_problem, $id_analyza, array $data) {
+        $pa_vazba = new Application_Model_DbTable_ProblemAnalysis();
+        $pa_vazba->updateProblemAnalysis($id_problem, $id_analyza, $data);
+        $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+        $flashMessenger->addMessage('Data o väzbe uložené.',
+            null, Strateg_MyFlashMessenger_Message::SUCCESS);
+        $this->_helper->redirector('edit','analysis','default',array('id'=>$id_analyza));        
+    }
+
     private function deletePA($id_problem, $id_analyza) {
         $pa_vazba = new Application_Model_DbTable_ProblemAnalysis();
         $pa_vazba->deleteProblemAnalysis($id_problem, $id_analyza);
@@ -302,6 +342,8 @@ public function init() {
         $this->maybeAddOutputPA($formData);
         // vymazat pa-vazbu:
         $this->maybeDeletePA($formData);
+        // ulozit zmeny na vazbe
+        $this->maybeEditPA($formData);
         // ulozit analyzu:
         if ($form->isValid($formData)) {
             $this->update();
