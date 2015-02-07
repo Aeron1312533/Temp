@@ -8,7 +8,8 @@ class HomeController extends Strateg_Controller_Action {
     }
     
     public function indexAction() {
-
+        $this->_helper->redirector('list', 'problem', 'default');
+        return;
     }
 }
 
