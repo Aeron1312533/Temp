@@ -83,6 +83,7 @@ public function init() {
                  foreach ($rows as $row) {
                     $problemRow = $problem->getProblem($row->id_problem);                        
                     $APs[] = array(
+                        'typ' => $problemRow['subjektivny'] ? 'sp' : 'op',
                         'id' => $row->id_problem,
                         'name' => $problemRow['nazov'],
                         'popis' => $row->popis);
@@ -96,6 +97,7 @@ public function init() {
                 foreach ($rows as $row) {
                     $problemRow = $problem->getProblem($row->id_problem);                        
                     $OPs[] = array(
+                        'typ' => $problemRow['subjektivny'] ? 'sp' : 'op',
                         'id' => $row->id_problem,
                         'name' => $problemRow['nazov'],
                         'popis' => $row->popis);
@@ -167,6 +169,7 @@ public function init() {
             $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
             $flashMessenger->addMessage('Zvolený názov už patrí inej analýze.',
                     null, Strateg_MyFlashMessenger_Message::DANGER);
+            return false;
         }
         catch (Exception $e) {
             $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
@@ -299,15 +302,29 @@ public function init() {
         $this->_helper->redirector('edit','analysis','default',array('id'=>$id_analyza));
     }
     
-    private function update() {
+    private function update() {        
         $form = $this->view->form;
-        $analysis = new Application_Model_DbTable_Analysis();
-        $data = array('id'=>$form->getValue('id'), 'nazov'=>$form->getValue('nazov'),
-            'popis'=>$form->getValue('popis'), 'autor'=>$form->getValue('autor'));
-        $analysis->updateAnalysis($form->getValue('id'),$data);
-        $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-        $flashMessenger->addMessage('Analýza uložená.', null, Strateg_MyFlashMessenger_Message::SUCCESS);
-        $this->_helper->redirector('edit','analysis','default',array('id'=>($this->getParam('id'))));
+        try {
+            $analysis = new Application_Model_DbTable_Analysis();
+            $data = array('id'=>$form->getValue('id'), 'nazov'=>$form->getValue('nazov'),
+                'popis'=>$form->getValue('popis'), 'autor'=>$form->getValue('autor'));
+            $analysis->updateAnalysis($form->getValue('id'),$data);
+            $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+            $flashMessenger->addMessage('Analýza uložená.', null, Strateg_MyFlashMessenger_Message::SUCCESS);
+            return true;
+        }
+        catch (Zend_Db_Statement_Exception $ze) {
+            $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+            $flashMessenger->addMessage('Zvolený názov už patrí inej analýze.',
+                    null, Strateg_MyFlashMessenger_Message::DANGER);
+            return false;
+        }
+        catch (Exception $e) {
+            $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+            $flashMessenger->addMessage('Iná chyba: '.$e->getMessage(), null,
+                Strateg_MyFlashMessenger_Message::DANGER);
+            return false;
+        }
     }
     
     private function showAPs($id) {
@@ -346,7 +363,12 @@ public function init() {
         $this->maybeEditPA($formData);
         // ulozit analyzu:
         if ($form->isValid($formData)) {
-            $this->update();
+            if ($this->update()) {
+                $this->_helper->redirector('list');
+            }
+            else {
+                $this->_helper->redirector('edit','analysis','default',array('id'=> $this->getParam('id')));
+            }
         } else {
             $form->populate($formData);
         } 

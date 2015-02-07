@@ -1,0 +1,20 @@
+@media print {
+    div#header, div#footer, *.print-none, *.alert, input[type=submit] {
+        display: none;
+    }
+    
+    * {
+        text-decoration: none;
+        border: none;
+    }
+    
+    h3.detail-attribute-header {
+        display: inline;
+    }
+
+    p.detail-attribute-value {
+        display: inline;
+    }
+    
+}
+

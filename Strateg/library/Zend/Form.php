@@ -54,7 +54,7 @@ class Zend_Form implements Iterator, Countable, Zend_Validate_Interface
     const ENCTYPE_URLENCODED = 'application/x-www-form-urlencoded';
     const ENCTYPE_MULTIPART  = 'multipart/form-data';
     /**#@-*/
-
+    
     /**
      * Form metadata and attributes
      * @var array

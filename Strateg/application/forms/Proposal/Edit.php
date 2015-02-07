@@ -6,6 +6,13 @@ class Application_Form_Proposal_Edit extends Zend_Form {
         $configFilePath = APPLICATION_PATH . "/forms/Proposal/configs/edit.ini";
         $config = new Zend_Config_Ini($configFilePath);     
         $this->setConfig($config);
+
+        $this->getElement('nazov')->setRequired(true)->setErrorMessages(array(
+            'isEmpty'=>'Prosím, zadajte názov návrhu'
+        ));
+
+        $this->getElement('ulozit')->setDecorators(Strateg_Decorator_Definitions::openButtonDecorators());
+        $this->getElement('spat')->setDecorators(Strateg_Decorator_Definitions::closeButtonDecorators());
         
         $Pwrapper = new Zend_Form_SubForm();
         $Pwrapper->setLegend('Riešené problémy');
@@ -48,11 +55,14 @@ class Application_Form_Proposal_Edit extends Zend_Form {
         $Pwrapper = $this->getSubForm('problems');
         $Psubform = new Zend_Form_SubForm();
         // hidden id_problem
-        $Psubform->addElement('hidden', 'id_problem', array('value'=>$data['id_problem']));
+        $Psubform->addElement('hidden', 'id_problem', array(
+            'value'=>$data['id_problem'],
+            'decorators' => Strateg_Decorator_Definitions::hiddenDecorators()));
         // link to problem
         $Psubform->addElement('html', 'Pnazov-' . $data['id_navrh'] .'-'.$data['id_problem'], 
                 array('value' => '<a href="../../../problem/detail/id/' . 
-                    $data['id_problem'] . '">' . $data["name"] . '</a>'
+                    $data['id_problem'] . '">' . $data["name"] . '</a>',
+                    'decorators' => Strateg_Decorator_Definitions::hiddenDecorators()
         ));
         $Psubform->addElement('multiCheckbox', 'uplne', array(
             'value' => $data['uplne'] == '1' ? true : false,
@@ -65,10 +75,16 @@ class Application_Form_Proposal_Edit extends Zend_Form {
             'rows' => 3,
             'value' => $data['popis']
         ));
-        // delete button
-        $Psubform->addElement('submit', 'remove', array('label'=>'Vymazať', 'class' => 'btn btn-danger'));
         //edit button
-        $Psubform->addElement('submit', 'edit', array('label'=>'Uložiť', 'class' => 'btn btn-primary'));
+        $Psubform->addElement('submit', 'edit', array(
+            'label'=>'Uložiť', 
+            'class' => 'btn btn-primary',
+            'decorators' => Strateg_Decorator_Definitions::openButtonDecorators()));
+        // delete button
+        $Psubform->addElement('submit', 'remove', array(
+            'label'=>'Vymazať',
+            'class' => 'btn btn-danger',
+            'decorators' => Strateg_Decorator_Definitions::closeButtonDecorators()));
         $Pwrapper->addSubForm($Psubform, $data['name']);
     }
 

@@ -11,6 +11,7 @@ echo $this->doctype(); ?>
                                   ->appendFile('http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.0.2/bootstrap.min.js'); ?>
     <?php echo $this->headLink()->prependStylesheet('//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css');  ?>
     <?php echo $this->headLink()->appendStylesheet($this->baseUrl('/css/strateg.css'));  ?>
+    <?php echo $this->headLink()->appendStylesheet($this->baseUrl('/css/strateg_print.css'), 'print');  ?>
 </head>
 <body>
 <div id="wrapper" class="container">

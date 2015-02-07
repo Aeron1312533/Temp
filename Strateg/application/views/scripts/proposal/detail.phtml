@@ -4,8 +4,8 @@
 <div class="detail_description">
       <?php
         echo '<h2>' . $this->proposal["nazov"] . '</h2>';
-        echo '<p>' . $this->proposal["popis"] . '</p><br />';
-        echo '<p><span>Autor: ' . $this->proposal["autor"] . '</span></p>';
+        echo '<p>' . $this->proposal["popis"] . '</p>';
+        echo '<div><h3 class="detail-attribute-header">Autor:</h3> <p class="detail-attribute-value">' . $this->proposal["autor"] . '</p></div>';
   ?>
 </div>
 <h3>Problémy, ktoré rieši čiastočne</h3>
@@ -13,7 +13,7 @@
   <?php
     foreach ($this->PPs as $PP) {
         echo '<a href="'  . $this->url(array('controller'=>'problem',
-            'action'=>'detail', 'id'=>$PP['id']), null, true) . '" class="list-group-item">';
+            'action'=>'detail', 'id'=>$PP['id'], 'type' => $PP['typ']), null, true) . '" class="list-group-item">';
         echo '<h4 class="list-group-item-heading">' . $PP['name'] . '</h4>';
         echo '<p class="list-group-item-text">' . $PP['popis'] . '</p>';
         echo '</a>';
@@ -29,7 +29,7 @@
   <?php
     foreach ($this->FPs as $FP) {
         echo '<a href="'  . $this->url(array('controller'=>'problem',
-            'action'=>'detail', 'id'=>$FP['id']), null, true) . '" class="list-group-item">';
+            'action'=>'detail', 'id'=>$FP['id'], 'type' => $FP['typ']), null, true) . '" class="list-group-item">';
         echo '<h4 class="list-group-item-heading">' . $FP['name'] . '</h4>';
         echo '<p class="list-group-item-text">' . $FP['popis'] . '</p>';
         echo '</a>';

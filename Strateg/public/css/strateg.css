@@ -22,5 +22,32 @@ a.detail_link {
 }
 
 .detail_description {
-    margin-bottom: 50px;
+    margin-bottom: 30px;
 }
+
+h3 {
+    font-size: 1.2em;
+    font-weight: inherit;
+}
+
+h4 {
+    font-size: 1.1em;
+    font-weight: bolder;
+}
+
+h3.detail-attribute-header {
+    display: inline;
+}
+
+p.detail-attribute-value {
+    display: inline;
+}
+
+div.element {
+    margin-top: 20px;
+}
+
+dt#subjektivny-label, dt#detail-label {
+    display: none;
+}
+

@@ -7,6 +7,13 @@ class Application_Form_Analysis_Edit extends Zend_Form {
         $config = new Zend_Config_Ini($configFilePath);        
         $this->setConfig($config);
         
+        $this->getElement('nazov')->setRequired(true)->setErrorMessages(array(
+            'isEmpty'=>'Prosím, zadajte názov analýzy'
+        ));
+
+        $this->getElement('ulozit')->setDecorators(Strateg_Decorator_Definitions::openButtonDecorators());
+        $this->getElement('spat')->setDecorators(Strateg_Decorator_Definitions::closeButtonDecorators());
+        
         $APwrapper = new Zend_Form_SubForm();
         $APwrapper->setLegend('Analyzované problémy');
         $APwrapper->addElement('submit', 'APpridat', array(
@@ -92,21 +99,31 @@ class Application_Form_Analysis_Edit extends Zend_Form {
         $APwrapper = $this->getSubForm('analyzedproblems');
         $APsubform = new Zend_Form_SubForm();
         // hidden id_problem
-        $APsubform->addElement('hidden', 'id_problem', array('value'=>$data['id_problem']));
+        $APsubform->addElement('hidden','id_problem', array(
+            'value'=>$data['id_problem'],
+            'decorators' => Strateg_Decorator_Definitions::hiddenDecorators()));
         // link to problem
         $APsubform->addElement('html', 'APnazov-' . $data['id_analyza'] .'-'.$data['id_problem'], 
                 array('value' => '<a href="../../../problem/detail/id/' . 
-                    $data['id_problem'] . '">' . $data["name"] . '</a>'
+                    $data['id_problem'] . '">' . $data["name"] . '</a>',
+                    'decorators' => Strateg_Decorator_Definitions::hiddenDecorators()
         ));      
         // P-A relation description
         $APsubform->addElement('textarea', 'popis',array(
             'rows' => 3,
             'value' => $data['popis']
         ));
-        // delete button
-        $APsubform->addElement('submit', 'remove', array('label'=>'Vymazať', 'class' => 'btn btn-danger'));
         //edit button
-        $APsubform->addElement('submit', 'edit', array('label'=>'Uložiť', 'class' => 'btn btn-primary'));
+        $APsubform->addElement('submit', 'edit', array(
+            'label'=>'Uložiť', 
+            'class' => 'btn btn-primary',
+            'decorators' => Strateg_Decorator_Definitions::openButtonDecorators()));
+        // delete button
+        $APsubform->addElement('submit', 'remove', array(
+            'label'=>'Vymazať',
+            'class' => 'btn btn-danger',
+            'decorators' => Strateg_Decorator_Definitions::closeButtonDecorators()));
+        
         $APwrapper->addSubForm($APsubform, $data['name']);
     }
     
@@ -114,21 +131,30 @@ class Application_Form_Analysis_Edit extends Zend_Form {
         $OPwrapper = $this->getSubForm('outputproblems');
         $OPsubform = new Zend_Form_SubForm();
         // hidden id_problem
-        $OPsubform->addElement('hidden', 'id_problem', array('value'=>$data['id_problem']));
+        $OPsubform->addElement('hidden', 'id_problem', array(
+            'value'=>$data['id_problem'],
+            'decorators' => Strateg_Decorator_Definitions::hiddenDecorators()));
         // link to problem
         $OPsubform->addElement('html', 'OPnazov-' . $data['id_analyza'] .'-'.$data['id_problem'], 
                 array('value' => '<a href="../../../problem/detail/id/' . 
-                    $data['id_problem'] . '">' . $data["name"] . '</a>'
+                    $data['id_problem'] . '">' . $data["name"] . '</a>',
+                'decorators' => Strateg_Decorator_Definitions::hiddenDecorators()
         ));      
-        // delete button
-        $OPsubform->addElement('submit', 'remove', array('label'=>'Vymazať', 'class' => 'btn btn-danger'));
-        //edit button
-        $OPsubform->addElement('submit', 'edit', array('label'=>'Uložiť', 'class' => 'btn btn-primary'));
         // P-A relation description
         $OPsubform->addElement('textarea', 'popis', array(
             'rows' => 3,
             'value' => $data['popis']
         ));
+        //edit button
+        $OPsubform->addElement('submit', 'edit', array(
+            'label'=>'Uložiť', 
+            'class' => 'btn btn-primary',
+            'decorators' => Strateg_Decorator_Definitions::openButtonDecorators()));
+        // delete button
+        $OPsubform->addElement('submit', 'remove', array(
+            'label'=>'Vymazať',
+            'class' => 'btn btn-danger',
+            'decorators' => Strateg_Decorator_Definitions::closeButtonDecorators()));
         $OPwrapper->addSubForm($OPsubform, $data['name']);
     }
 

@@ -33,11 +33,12 @@ class ProposalController extends Strateg_Controller_Action
             }
             
             if ($form->isValid($formData)) {
-                $proposal = new Application_Model_DbTable_Proposal();
-                $proposal->addProposal($form->getValues());
-                $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-                $flashMessenger->addMessage('Návrh pridaný.', null, Strateg_MyFlashMessenger_Message::SUCCESS);
-                $this->_helper->redirector('list');
+                if ($this->add()) {
+                        $this->_helper->redirector('list');
+                    }
+                    else {
+                        $this->_helper->redirector('add');
+                    }
             } else {
                 $form->populate($formData);
             }
@@ -82,7 +83,8 @@ class ProposalController extends Strateg_Controller_Action
                 
                  foreach ($rows as $row) {
                     $problemRow = $problem->getProblem($row->id_problem);                        
-                    $APs[] = array(
+                    $PPs[] = array(
+                        'typ' => $problemRow['subjektivny'] ? 'sp' : 'op',
                         'id' => $row->id_problem,
                         'name' => $problemRow['nazov'],
                         'popis' => $row->popis);
@@ -91,11 +93,12 @@ class ProposalController extends Strateg_Controller_Action
                 //problemy, ktore riesi uplne
                 $rows = $problemProposal->getProblemProposal('id_navrh = '. $id.' and uplne = 1');
                 $problem = new Application_Model_DbTable_Problem();
-                $OPs = array();
+                $FPs = array();
                 
                 foreach ($rows as $row) {
                     $problemRow = $problem->getProblem($row->id_problem);                        
                     $FPs[] = array(
+                        'typ' => $problemRow['subjektivny'] ? 'sp' : 'op',
                         'id' => $row->id_problem,
                         'name' => $problemRow['nazov'],
                         'popis' => $row->popis);
@@ -195,7 +198,12 @@ class ProposalController extends Strateg_Controller_Action
         $this->maybeEditPP($formData);
         // ulozit navrh:
         if ($form->isValid($formData)) {
-            $this->update();
+            if ($this->update()) {
+                $this->_helper->redirector('list');
+            }
+            else {
+                $this->_helper->redirector('edit','proposal','default',array('id'=> $this->getParam('id')));
+            }
         } else {
             $form->populate($formData);
         } 
@@ -287,5 +295,52 @@ class ProposalController extends Strateg_Controller_Action
         $this->_helper->redirector('edit','proposal','default',array('id'=>$id_navrh));        
     }
 
+    private function add() {
+        $proposal = new Application_Model_DbTable_Proposal();
+        try {
+            $proposal->addProposal($this->view->form->getValues());
+            $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+            $flashMessenger->addMessage('Návrh pridaný.', null,
+                Strateg_MyFlashMessenger_Message::SUCCESS);
+            return true;
+        }
+        catch (Zend_Db_Statement_Exception $ze) {
+            $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+            $flashMessenger->addMessage('Zvolený názov už patrí inému návrhu.',
+                    null, Strateg_MyFlashMessenger_Message::DANGER);
+            return false;
+        }
+        catch (Exception $e) {
+            $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+            $flashMessenger->addMessage('Iná chyba: '.$e->getMessage(), null,
+                Strateg_MyFlashMessenger_Message::DANGER);
+            return false;
+        }
+    }
+    
+    private function update() {        
+        $form = $this->view->form;
+        try {
+            $analysis = new Application_Model_DbTable_Proposal();
+            $data = array('id'=>$form->getValue('id'), 'nazov'=>$form->getValue('nazov'),
+                'popis'=>$form->getValue('popis'), 'autor'=>$form->getValue('autor'));
+            $analysis->updateProposal($form->getValue('id'),$data);
+            $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+            $flashMessenger->addMessage('Návrh uložený.', null, Strateg_MyFlashMessenger_Message::SUCCESS);
+            return true;
+        }
+        catch (Zend_Db_Statement_Exception $ze) {
+            $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+            $flashMessenger->addMessage('Zvolený názov už patrí inému návrhu.',
+                    null, Strateg_MyFlashMessenger_Message::DANGER);
+            return false;
+        }
+        catch (Exception $e) {
+            $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+            $flashMessenger->addMessage('Iná chyba: '.$e->getMessage(), null,
+                Strateg_MyFlashMessenger_Message::DANGER);
+            return false;
+        }
+    }
 }
 

@@ -1,10 +1,12 @@
+<h1>Analýzy</h1>
+<?php
+    if (Zend_Registry::get('role') === 'manager') {
+       
+?>
 <p><a href="<?php echo $this->url(array('controller'=>'analysis',
-        'action'=>'add'));?>">Pridať</a></p>
+        'action'=>'add'));?>" class="print-none">Pridať</a></p>
+<?php } ?>
 <table class="table table-striped table-bordered table-hover table-condensed">
-<tr>
-    <th>Názov</th>
-    <th>&nbsp;</th>
-</tr>
 <?php foreach($this->analyses as $analysis) : ?>
 <tr>
     <td class="list_item_name"><a class="detail_link" href="<?php echo $this->url(array('controller'=>'analysis',
@@ -13,11 +15,14 @@
                 <?php echo $this->escape($analysis->nazov);?>
             </div></a>
     </td>
-
+    <?php
+        if (Zend_Registry::get('role') === 'manager') {       
+    ?>
     <td>
         <a href="<?php echo $this->url(array('controller'=>'analysis',
-            'action'=>'delete', 'id'=>$analysis->id));?>">Vymazať</a>
+            'action'=>'delete', 'id'=>$analysis->id));?>" class="print-none">Vymazať</a>
     </td>
+    <?php } ?>
 </tr>
 <?php endforeach; ?>
 </table>

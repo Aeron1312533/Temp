@@ -6,6 +6,9 @@ class Application_Form_Proposal_Delete extends Zend_Form {
         $configFilePath = APPLICATION_PATH . "/forms/Proposal/configs/delete.ini";
         $config = new Zend_Config_Ini($configFilePath);        
         $this->setConfig($config);
+        
+        $this->getElement('ano')->setDecorators(Strateg_Decorator_Definitions::openButtonDecorators());
+        $this->getElement('nie')->setDecorators(Strateg_Decorator_Definitions::closeButtonDecorators());
     }
     
     public function showTheRest() {        

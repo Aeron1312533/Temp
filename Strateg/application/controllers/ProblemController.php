@@ -37,11 +37,12 @@ class ProblemController extends Strateg_Controller_Action
             }
             
             if ($form->isValid($formData)) {
-                $problem = new Application_Model_DbTable_Problem();
-                $problem->addProblem($form->getValues());
-                $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-                $flashMessenger->addMessage('Problém pridaný.', null, Strateg_MyFlashMessenger_Message::SUCCESS);
-                $this->_helper->redirector('list');
+                if ($this->add()) {
+                        $this->_helper->redirector('list');
+                    }
+                    else {
+                        $this->_helper->redirector('add');
+                    }
             } else {
                 $form->populate($formData);
             }
@@ -70,12 +71,12 @@ class ProblemController extends Strateg_Controller_Action
             }
             
             if ($form->isValid($formData)) {
-                $id = (int)$this->getParam('id');
-                $problem = new Application_Model_DbTable_Problem();
-                $problem->updateProblem($id, $form->getValues());
-                $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-                $flashMessenger->addMessage('Problém uložený.', null, Strateg_MyFlashMessenger_Message::SUCCESS);
-                $this->_helper->redirector('list');
+                if ($this->update()) {
+                        $this->_helper->redirector('list');
+                    }
+                    else {
+                        $this->_helper->redirector('edit','problem','default',array('id'=> $this->getParam('id'), 'type' => $type ));
+                    }
             } else {
                 $form->populate($formData);
             }
@@ -128,7 +129,7 @@ class ProblemController extends Strateg_Controller_Action
                 $problem = new Application_Model_DbTable_Problem();
                 $problem_array = $problem->getProblem($id);
                 $this->view->problem = $problem_array;
-                
+
                 //analyzovane problemy
                 $problemAnalysis = new Application_Model_DbTable_ProblemAnalysis();
                 $rows = $problemAnalysis->getProblemAnalysis('id_problem = '. $id.' and vstup = 1');
@@ -188,6 +189,7 @@ class ProblemController extends Strateg_Controller_Action
             $this->view->PPs = $PPs;
             $this->view->APs = $APs;
             $this->view->OPs = $OPs;
+            $this->view->type = $type;
         }
     }
     
@@ -221,6 +223,52 @@ class ProblemController extends Strateg_Controller_Action
                 $form->populate($problem->getProblem($id));
             }
             $form->showTheRest();
+        }
+    }
+    
+    private function add() {
+        $problem = new Application_Model_DbTable_Problem();
+        try {
+            $problem->addProblem($this->view->form->getValues());
+            $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+            $flashMessenger->addMessage('Problém pridaný.', null,
+                Strateg_MyFlashMessenger_Message::SUCCESS);
+            return true;
+        }
+        catch (Zend_Db_Statement_Exception $ze) {
+            $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+            $flashMessenger->addMessage('Zvolený názov už patrí inému problému.',
+                    null, Strateg_MyFlashMessenger_Message::DANGER);
+            return false;
+        }
+        catch (Exception $e) {
+            $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+            $flashMessenger->addMessage('Iná chyba: '.$e->getMessage(), null,
+                Strateg_MyFlashMessenger_Message::DANGER);
+            return false;
+        }
+    }
+    
+    private function update() {
+        $id = (int)$this->getParam('id');
+        try {
+            $problem = new Application_Model_DbTable_Problem();
+            $problem->updateProblem($id, $this->view->form->getValues());
+                $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+                $flashMessenger->addMessage('Problém uložený.', null, Strateg_MyFlashMessenger_Message::SUCCESS);
+            return true;
+        }
+        catch (Zend_Db_Statement_Exception $ze) {
+            $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+            $flashMessenger->addMessage('Zvolený názov už patrí inému problému.',
+                    null, Strateg_MyFlashMessenger_Message::DANGER);
+            return false;
+        }
+        catch (Exception $e) {
+            $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
+            $flashMessenger->addMessage('Iná chyba: '.$e->getMessage(), null,
+                Strateg_MyFlashMessenger_Message::DANGER);
+            return false;
         }
     }
 }
