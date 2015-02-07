@@ -105,7 +105,7 @@ class Application_Form_Analysis_Edit extends Zend_Form {
         // link to problem
         $APsubform->addElement('html', 'APnazov-' . $data['id_analyza'] .'-'.$data['id_problem'], 
                 array('value' => '<a href="../../../problem/detail/id/' . 
-                    $data['id_problem'] . '">' . $data["name"] . '</a>',
+                    $data['id_problem'] . '/type/sp">' . $data["name"] . '</a>',
                     'decorators' => Strateg_Decorator_Definitions::hiddenDecorators()
         ));      
         // P-A relation description
@@ -137,7 +137,7 @@ class Application_Form_Analysis_Edit extends Zend_Form {
         // link to problem
         $OPsubform->addElement('html', 'OPnazov-' . $data['id_analyza'] .'-'.$data['id_problem'], 
                 array('value' => '<a href="../../../problem/detail/id/' . 
-                    $data['id_problem'] . '">' . $data["name"] . '</a>',
+                    $data['id_problem'] . '/type/op">' . $data["name"] . '</a>',
                 'decorators' => Strateg_Decorator_Definitions::hiddenDecorators()
         ));      
         // P-A relation description

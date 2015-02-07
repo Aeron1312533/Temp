@@ -67,7 +67,7 @@ class ProblemController extends Strateg_Controller_Action
              * if back button was pressed
              */
             if(isset($formData["spat"])) {
-                $this->_helper->redirector('list');
+                $this->_helper->redirector('detail','problem','default',array('id'=> $this->getParam('id'), 'type' => $type ));
             }
             
             if ($form->isValid($formData)) {

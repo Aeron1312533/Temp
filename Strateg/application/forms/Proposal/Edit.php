@@ -51,9 +51,13 @@ class Application_Form_Proposal_Edit extends Zend_Form {
         }        
     }
     
-    public function addP(array $data) {       
+    public function addP(array $data, $subjektivny) {       
         $Pwrapper = $this->getSubForm('problems');
         $Psubform = new Zend_Form_SubForm();
+        $p_type = 'op';
+        if ($subjektivny == 1) {
+            $p_type = 'sp';
+        }
         // hidden id_problem
         $Psubform->addElement('hidden', 'id_problem', array(
             'value'=>$data['id_problem'],
@@ -61,7 +65,7 @@ class Application_Form_Proposal_Edit extends Zend_Form {
         // link to problem
         $Psubform->addElement('html', 'Pnazov-' . $data['id_navrh'] .'-'.$data['id_problem'], 
                 array('value' => '<a href="../../../problem/detail/id/' . 
-                    $data['id_problem'] . '">' . $data["name"] . '</a>',
+                    $data['id_problem'] . '/type/'.$p_type.'">' . $data["name"] . '</a>',
                     'decorators' => Strateg_Decorator_Definitions::hiddenDecorators()
         ));
         $Psubform->addElement('multiCheckbox', 'uplne', array(

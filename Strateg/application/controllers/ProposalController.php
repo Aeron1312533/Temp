@@ -188,7 +188,7 @@ class ProposalController extends Strateg_Controller_Action
     private function editButtons($form, $formData) {
         // tlacidlo spat:
         if(isset($formData["spat"])) {
-            $this->_helper->redirector('list');
+            $this->_helper->redirector('detail','proposal','default',array('id'=> $this->getParam('id')));
         }
         // tlacidla pridat problem:
         $this->maybeAddPP($formData);
@@ -216,8 +216,9 @@ class ProposalController extends Strateg_Controller_Action
         foreach ($rows as $row) {
             $problemRow = $problem->getProblem($row->id_problem);                        
             $this->view->form->addP(array('name' => $problemRow['nazov'],'id_navrh' => $id,
-                'id_problem' => $problemRow['id'],'popis' => $row->popis, 'uplne' => $row->uplne));
-                }
+                'id_problem' => $problemRow['id'],'popis' => $row->popis, 'uplne' => $row->uplne), 
+                $problemRow['subjektivny']);
+         }
     }
  
     private function addPP($array_problems, $id_navrh, $uplne) {
@@ -290,7 +291,7 @@ class ProposalController extends Strateg_Controller_Action
         $pp_vazba = new Application_Model_DbTable_ProblemProposal();
         $pp_vazba->updateProblemProposal($id_problem, $id_navrh, $data);
         $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-        $flashMessenger->addMessage('Data o väzbe uložené.',
+        $flashMessenger->addMessage('Dáta o väzbe uložené.',
             null, Strateg_MyFlashMessenger_Message::SUCCESS);
         $this->_helper->redirector('edit','proposal','default',array('id'=>$id_navrh));        
     }

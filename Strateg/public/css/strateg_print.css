@@ -6,6 +6,7 @@
     * {
         text-decoration: none;
         border: none;
+        color: black;
     }
     
     h3.detail-attribute-header {
@@ -14,6 +15,10 @@
 
     p.detail-attribute-value {
         display: inline;
+    }
+    
+    h4 , p.list-group-item-text{
+        margin-left: 20px;        
     }
     
 }

@@ -288,7 +288,7 @@ public function init() {
         $pa_vazba = new Application_Model_DbTable_ProblemAnalysis();
         $pa_vazba->updateProblemAnalysis($id_problem, $id_analyza, $data);
         $flashMessenger = $this->_helper->getHelper('MyFlashMessenger');
-        $flashMessenger->addMessage('Data o väzbe uložené.',
+        $flashMessenger->addMessage('Dáta o väzbe uložené.',
             null, Strateg_MyFlashMessenger_Message::SUCCESS);
         $this->_helper->redirector('edit','analysis','default',array('id'=>$id_analyza));        
     }
@@ -352,7 +352,7 @@ public function init() {
     private function editButtons($form, $formData) {
         // tlacidlo spat:
         if(isset($formData["spat"])) {
-            $this->_helper->redirector('list');
+            $this->_helper->redirector('detail','analysis','default',array('id'=> $this->getParam('id')));
         }
         // tlacidla pridat vstupny/vystupny problem:
         $this->maybeAddInputPA($formData);
